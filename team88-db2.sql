@@ -16,7 +16,8 @@ create table Customer(
 	phone varchar(10),
 	email varchar(30),
 	frequent_miles varchar(5),
-	CONSTRAINT Customer_PK PRIMARY KEY (cid) DEFERRABLE
+	CONSTRAINT Customer_PK 
+		PRIMARY KEY (cid) DEFERRABLE
 );
 
 create table Reservation(
@@ -26,8 +27,10 @@ create table Reservation(
 	credit_card_num varchar(16),
 	reservation_date date,
 	ticketed varchar(1),
-	CONSTRAINT res_PK PRIMARY KEY (reservation_number) DEFERRABLE,
-	CONSTRAINT res_FK FOREIGN KEY (cid) references Customer(cid) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT res_PK 
+		PRIMARY KEY (reservation_number) DEFERRABLE,
+	CONSTRAINT res_FK 
+		FOREIGN KEY (cid) references Customer(cid) INITIALLY DEFERRED DEFERRABLE
 );
 
 create table Reservation_detail(
@@ -35,12 +38,16 @@ create table Reservation_detail(
 	flight_number varchar(3),
 	flight_date date,
 	leg int,
-	CONSTRAINT res_detail_PK PRIMARY KEY (reservation_number, leg) DEFERRABLE,
-	CONSTRAINT res_detail_FK1 FOREIGN KEY (reservation_number) references Reservation(reservation_number) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT res_detail_FK2 FOREIGN KEY (flight_number) references Flight(flight_number) INITIALLY DEFERRED DEFERRABLE
+	CONSTRAINT res_detail_PK 
+		PRIMARY KEY (reservation_number, leg) DEFERRABLE,
+	CONSTRAINT res_detail_FK1 
+		FOREIGN KEY (reservation_number) references Reservation(reservation_number) INITIALLY DEFERRED DEFERRABLE,
+	CONSTRAINT res_detail_FK2 
+		FOREIGN KEY (flight_number) references Flight(flight_number) INITIALLY DEFERRED DEFERRABLE
 );
 
 create table Date(
 	c_date date,
-	CONSTRAINT Date_PK PRIMARY KEY (c_date) DEFERRABLE
+	CONSTRAINT Date_PK 
+		PRIMARY KEY (c_date) DEFERRABLE
 );                                  

@@ -1,4 +1,9 @@
 -- schemas 1-4
+DROP TABLE Airline CASCADE CONSTRAINTS;
+DROP TABLE Plane CASCADE CONSTRAINTS;
+DROP TABLE Flight CASCADE CONSTRAINTS;
+DROP TABLE Price CASCADE CONSTRAINTS;
+
 create table Airline(
 	airline_id varchar(5),
 	airline_name varchar(50),
