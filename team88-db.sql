@@ -72,7 +72,10 @@ create table Customer(
 	email varchar(30),
 	frequent_miles varchar(5),
 	CONSTRAINT Customer_PK 
-		PRIMARY KEY (cid) DEFERRABLE
+		PRIMARY KEY (cid) DEFERRABLE,
+	CONSTRAINT Customer_to_Airline_FK
+		FOREIGN KEY (frequent_miles) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+
 );
 
 create table Reservation(
@@ -82,9 +85,9 @@ create table Reservation(
 	credit_card_num varchar(16),
 	reservation_date date,
 	ticketed varchar(1),
-	CONSTRAINT res_PK 
+	CONSTRAINT Reservation_PK 
 		PRIMARY KEY (reservation_number) DEFERRABLE,
-	CONSTRAINT res_FK 
+	CONSTRAINT Reservation_to_Customer_FK 
 		FOREIGN KEY (cid) REFERENCES Customer(cid) INITIALLY DEFERRED DEFERRABLE
 );
 
@@ -93,11 +96,11 @@ create table Reservation_detail(
 	flight_number varchar(3),
 	flight_date date,
 	leg int,
-	CONSTRAINT res_detail_PK 
+	CONSTRAINT Reservation_detail_PK 
 		PRIMARY KEY (reservation_number, leg) DEFERRABLE,
-	CONSTRAINT res_detail_FK1 
+	CONSTRAINT Reservation_detail_to_Reservation_FK1 
 		FOREIGN KEY (reservation_number) REFERENCES Reservation(reservation_number) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT res_detail_FK2 
+	CONSTRAINT Reservation_detail_to_Flight_FK2 
 		FOREIGN KEY (flight_number) REFERENCES Flight(flight_number) INITIALLY DEFERRED DEFERRABLE
 );
 
