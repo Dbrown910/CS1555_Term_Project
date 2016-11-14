@@ -1,3 +1,4 @@
+-- Clean up
 DROP TABLE Airline CASCADE CONSTRAINTS;
 DROP TABLE Plane CASCADE CONSTRAINTS;
 DROP TABLE Flight CASCADE CONSTRAINTS;
@@ -7,6 +8,7 @@ DROP TABLE Reservation CASCADE CONSTRAINTS;
 DROP TABLE Reservation_detail CASCADE CONSTRAINTS;
 DROP TABLE System_time CASCADE CONSTRAINTS;
 
+-- Create Tables
 create table Airline(
 	airline_id varchar(5),
 	airline_name varchar(50),
@@ -75,7 +77,6 @@ create table Customer(
 		PRIMARY KEY (cid) DEFERRABLE,
 	CONSTRAINT Customer_to_Airline_FK
 		FOREIGN KEY (frequent_miles) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
-
 );
 
 create table Reservation(
@@ -87,7 +88,7 @@ create table Reservation(
 	ticketed varchar(1),
 	CONSTRAINT Reservation_PK 
 		PRIMARY KEY (reservation_number) DEFERRABLE,
-	CONSTRAINT Reservation_to_Customer_FK 
+	CONSTRAINT Reservation_FK 
 		FOREIGN KEY (cid) REFERENCES Customer(cid) INITIALLY DEFERRED DEFERRABLE
 );
 
@@ -96,11 +97,11 @@ create table Reservation_detail(
 	flight_number varchar(3),
 	flight_date date,
 	leg int,
-	CONSTRAINT Reservation_detail_PK 
+	CONSTRAINT R_detail_PK 
 		PRIMARY KEY (reservation_number, leg) DEFERRABLE,
-	CONSTRAINT Reservation_detail_to_Reservation_FK1 
+	CONSTRAINT R_detail_to_Reservation_FK1 
 		FOREIGN KEY (reservation_number) REFERENCES Reservation(reservation_number) INITIALLY DEFERRED DEFERRABLE,
-	CONSTRAINT Reservation_detail_to_Flight_FK2 
+	CONSTRAINT R_detail_to_Flight_FK2 
 		FOREIGN KEY (flight_number) REFERENCES Flight(flight_number) INITIALLY DEFERRED DEFERRABLE
 );
 
@@ -109,3 +110,6 @@ create table System_time(
 	CONSTRAINT Date_PK 
 		PRIMARY KEY (c_date) DEFERRABLE
 );                                  
+
+-- TODO
+-- Create Triggers
