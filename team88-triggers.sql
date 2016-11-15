@@ -110,8 +110,7 @@ before update of c_date on System_time
 referencing new as newVal old as oldVal
 for each row
 declare 
- num_Passengers int;
-
+	num_Passengers int;
 begin
   Select Count(flight_number) into num_Passengers
   From seatsReserved 

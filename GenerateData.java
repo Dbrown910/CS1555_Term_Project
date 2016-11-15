@@ -15,12 +15,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GenerateData
 {
 	//----------------------------------------------------------------------//
-	//                  Arrays with data that we can pull from              //
+	//                  Arrays of data that we can pull from              //
 	//----------------------------------------------------------------------//
 
 	// The possible airline IDs that are already in the team88-data.sql file
 	public static String AIRLINE_IDS[] = {"001", "002", "003", "004", "005", "006", "007", "008", "009", "010"};
 	public static String SALUTATIONS[] = {"Mr", "Mrs", "Ms"};
+	public static String DATES[] = {"01-JAN-2015 10:00:00", "01-MAR-2015 10:00:00", "01-SEP-2016 10:00:00"};
 	public static String NAMES[];
 	//----------------------------------------------------------------------//
 	//                                 End                                  //
@@ -70,8 +71,9 @@ public class GenerateData
 				String fName  = names[0];
 				String lName = names[1];
 				String ccNumber = GenerateCCNumber();
+				String date = "to_date(" + DATES[ThreadLocalRandom.current().nextInt(0, DATES.length)] + ")";
 				
-				bw.write(id + " " + salutation + " " + fName + " " + lName + " " + ccNumber + "\n");
+				bw.write(id + " " + salutation + " " + fName + " " + lName + " " + ccNumber + " " + date +"\n");
 			}
 		}
 		catch (IOException e)
