@@ -81,12 +81,11 @@ after update of c_date on System_time
 referencing new as newVal old as oldVal
 for each row
 declare 
- num_Passengers int;
-
+	num_Passengers int;
 begin
  Delete From Reservation
  Where Exists ( Select flight_date
- 				From Reservation_detail
+ 				From Reservation_detail 
  				Where ((flight_date - :newVal.c_date) * 24) <= 12 
  				and Reservation_detail.reservation_number = Reservation.reservation_number
  				and Reservation.ticketed = 'N');
@@ -96,3 +95,14 @@ begin
  Having ticketed = 'Y';
 end;
 /
+
+
+
+
+Select *
+	From Reservation_detail JOIN and Reservation_detail.reservation_number = Reservation.reservation_number
+	Where ((flight_date - :newVal.c_date) * 24) <= 12 
+	and Reservation.ticketed = 'N'
+
+GROUP BY Flight_Number
+
