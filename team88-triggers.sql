@@ -1,3 +1,35 @@
+--1)
+create or replace trigger adjustTicket
+before update of leg on Reservation_detail
+referencing new as newVal old as oldVal
+for each row
+declare 
+ old_price int;
+ upd_price int;
+begin
+--get the price of the old leg
+ Select high_price into old_price 
+ From Price Join Flight on Flight.airline_id = Price.airline_id 
+ Where flight_number = :oldVal.flight_number;
+
+--get the price of the new leg
+ Select high_price into upd_price 
+ From Price Join Flight on Flight.airline_id = Price.airline_id 
+ Where flight_number = :newVal.flight_number;
+
+  --subtract the old price from the total cost
+ update Reservation 
+ set cost = cost - old_price 
+ where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
+ 
+ --add the price of the new leg to the cost
+ update Reservation 
+ set cost = cost + upd_price 
+ where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
+end;
+/
+
+--2)
 CREATE OR REPLACE FUNCTION get_plane_capacity (flightNum in varchar) RETURN int
 AS
 capacity float;
@@ -44,44 +76,34 @@ BEGIN
 END;
 /
 
---1)
-create or replace trigger adjustTicket
-before update of leg on Reservation_detail
-referencing new as newVal old as oldVal
-for each row
-declare 
- old_price int;
- upd_price int;
-begin
---get the price of the old leg
- Select high_price into old_price 
- From Price Join Flight on Flight.airline_id = Price.airline_id 
- Where flight_number = :oldVal.flight_number;
-
---get the price of the new leg
- Select high_price into upd_price 
- From Price Join Flight on Flight.airline_id = Price.airline_id 
- Where flight_number = :newVal.flight_number;
-
-  --subtract the old price from the total cost
- update Reservation 
- set cost = cost - old_price 
- where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
- 
- --add the price of the new leg to the cost
- update Reservation 
- set cost = cost + upd_price 
- where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
-end;
+CREATE OR REPLACE TRIGGER planeUpgrade
+AFTER INSERT ON Reservation_detail
+FOR EACH ROW
+BEGIN
+	-- If the number of reservations on the flight is equal to the plane's capacity
+	IF get_num_flight_reservations(:new.flight_number) >= get_plane_capacity(:new.flight_number) THEN
+		-- Find a new plane
+		UPDATE Flight
+		SET plane_type = get_new_plane(get_num_flight_reservations(:new.flight_number))
+		WHERE flight_number = :new.flight_number;
+	END IF;		
+END;
 /
 
 --3)
-create or replace view seatsReserved
+--compiles necessary information about the reservation
+create or replace view seatingInfo
 	as rd.reservation_number, rd.flight_number, rd.flight_date, f.airline_id, f.plane_type, p.plane_capacity, r.ticketed
-	from Reservation_detail as rd, Flight as f, Plane as p, Reservation r
+	from Reservation_detail as rd, Flight as f, Plane as p, Reservation as r
 	where rd.reservation_numer = r.reservation_number 
 	  and rd.flight_number = f.flight_number 
-	  and f.plane_type = p.plane_type;  
+	  and f.plane_type = p.plane_type;
+
+--gets the number of ticketed reservations for each plane
+create or replace view seatsReserved
+	as flight_number, count(flight_number) as seat_count
+	from seatingInfo, System_time
+	having ((flight_date - c_date) * 24) <= 12 and ticketed = 'Y';
 
 create or replace trigger cancelReservation 
 before update of c_date on System_time
@@ -91,17 +113,20 @@ declare
  num_Passengers int;
 
 begin
- IF (Select Count(reservation_number) 
- 	 From seatsReserved 
- 	 Having ((flight_date - :newVal.c_date) * 24) <= 12 and ticketed = 'Y') <  
-
+  Select Count(flight_number) into num_Passengers
+  From seatsReserved 
+  Having ((flight_date - :newVal.c_date) * 24) <= 12 and ticketed = 'Y') <  
+  
+ 
+ --deletes all the reservations 12 hours from the flight 
  Delete From Reservation
  Where Exists ( Select *
  				From Reservation_detail Join Reservation On Reservation_detail.reservation_number = Reservation.reservation_number
  				Where ((flight_date - :newVal.c_date) * 24) <= 12 				
  				And Reservation.ticketed = 'N');
  
- 
+ IF
+
  END IF;
 end;
 /
