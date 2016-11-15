@@ -76,33 +76,29 @@ end;
 /
 
 --3)
+create or replace view seatsReserved
+	as rd.reservation_number, rd.flight_number, rd.flight_date, f.airline_id, f.plane_type, p.plane_capacity, r.ticketed
+	from Reservation_detail as rd, Flight as f, Plane as p, Reservation r
+	where rd.reservation_numer = r.reservation_number 
+	  and rd.flight_number = f.flight_number 
+	  and f.plane_type = p.plane_type;  
+
 create or replace trigger cancelReservation 
-after update of c_date on System_time
+before update of c_date on System_time
 referencing new as newVal old as oldVal
 for each row
 declare 
 	num_Passengers int;
 begin
+ IF (Select Count(reservation_number) 
+ 	 From seatsReserved 
+ 	 Having ((flight_date - :newVal.c_date) * 24) <= 12 and ticketed = 'Y') <  
+
  Delete From Reservation
- Where Exists ( Select flight_date
- 				From Reservation_detail 
- 				Where ((flight_date - :newVal.c_date) * 24) <= 12 
- 				and Reservation_detail.reservation_number = Reservation.reservation_number
- 				and Reservation.ticketed = 'N');
- 
- Select Count(Distinct flight_number)
- From Reservation_detail Join Reservation on Reservation.reservation_number = Reservation_detail.reservation_number
- Having ticketed = 'Y';
+ Where Exists ( Select *
+ 				From Reservation_detail Join Reservation On Reservation_detail.reservation_number = Reservation.reservation_number
+ 				Where ((flight_date - :newVal.c_date) * 24) <= 12 				
+ 				And Reservation.ticketed = 'N'); 
+ END IF;
 end;
 /
-
-
-
-
-Select *
-	From Reservation_detail JOIN and Reservation_detail.reservation_number = Reservation.reservation_number
-	Where ((flight_date - :newVal.c_date) * 24) <= 12 
-	and Reservation.ticketed = 'N'
-
-GROUP BY Flight_Number
-
