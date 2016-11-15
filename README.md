@@ -1,5 +1,3 @@
-# CS1555_Term_Project
-
 Team Number: Team 3
 Team Nickname: Team88 
 
