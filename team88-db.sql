@@ -43,7 +43,7 @@ create table Flight(
 	CONSTRAINT Flight_PK
 		PRIMARY KEY (flight_number) DEFERRABLE,
 	CONSTRAINT Flight_to_Plane_FK
-		FOREIGN KEY (plane_type) REFERENCES PLANE(plane_type) INITIALLY DEFERRED DEFERRABLE,
+		FOREIGN KEY (plane_type, airline_id) REFERENCES PLANE(plane_type, owner_id) INITIALLY DEFERRED DEFERRABLE,
 	CONSTRAINT Flight_to_Airline_FK
 		FOREIGN KEY (airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
 );
