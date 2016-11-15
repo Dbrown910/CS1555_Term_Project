@@ -1,8 +1,8 @@
 # CS1555_Term_Project
-The term project for dbms
 
+Team Number: Team 3
+Team Nickname: Team88 
 
-Milestone #1 TODOS:
-
-1. Create the three triggers
-2. Generate data and insert it into the tables
+Milestone 1 Notes:
+team88-db.sql - This script creates the tables and the triggers
+team88-data.sql - This script will populate the DB with arbitrary data

@@ -26,7 +26,7 @@ create table Plane(
 	year int,
 	owner_id varchar(5),
 	CONSTRAINT Plane_PK
-		PRIMARY KEY (plane_type) DEFERRABLE,
+		PRIMARY KEY (plane_type, owner_id) DEFERRABLE,
 	CONSTRAINT Plane_to_Airline_FK
 		FOREIGN KEY (owner_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
 );
@@ -86,6 +86,8 @@ create table Reservation(
 	credit_card_num varchar(16),
 	reservation_date date,
 	ticketed varchar(1),
+	start_city varchar(3),
+	end_city varchar(3),
 	CONSTRAINT Reservation_PK 
 		PRIMARY KEY (reservation_number) DEFERRABLE,
 	CONSTRAINT Reservation_FK 
