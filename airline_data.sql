@@ -1,0 +1,10 @@
+INSERT INTO Airline VALUES('001', 'Adlair Aviation', 'AA', 1978);
+INSERT INTO Airline VALUES('002', 'Discovery Air Defence', 'DAD', 1973);
+INSERT INTO Airline VALUES('003', 'Cougar Helicopters', 'CHC', 1982);
+INSERT INTO Airline VALUES('004', 'Kootenay Direct Airlines', 'KDA', 1970);
+INSERT INTO Airline VALUES('005', 'Orca Airways', 'OA', 1982);
+INSERT INTO Airline VALUES('006', 'Porter Airlines', 'PA', 1991);
+INSERT INTO Airline VALUES('007', 'Sky Regional Airlines', 'SRA', 1985);
+INSERT INTO Airline VALUES('008', 'Superior Airways', 'SA', 1997);
+INSERT INTO Airline VALUES('009', 'Tofino Air', 'TA', 1968);
+INSERT INTO Airline VALUES('010', 'Transwest Air', 'TWA', 1980);
