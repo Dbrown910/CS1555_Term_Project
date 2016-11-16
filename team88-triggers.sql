@@ -91,41 +91,65 @@ END;
 /
 
 --3)
+--finds a new plane to accomadate a smaller group of reservations
+CREATE OR REPLACE FUNCTION downsize_plane (cap in int) RETURN char
+AS
+p_type char;
+BEGIN
+	-- Select the plane with the next highest capacity
+	SELECT plane_type into p_type
+	FROM (SELECT *
+			FROM Plane
+			WHERE plane_capacity > cap
+			ORDER BY plane_capacity DESC)
+	WHERE ROWNUM = 1;
+	
+	return (p_type);
+END;
+/
+
 --compiles necessary information about the reservation
 create or replace view seatingInfo
-	as rd.reservation_number, rd.flight_number, rd.flight_date, f.airline_id, f.plane_type, p.plane_capacity, r.ticketed
-	from Reservation_detail as rd, Flight as f, Plane as p, Reservation as r
-	where rd.reservation_numer = r.reservation_number 
-	  and rd.flight_number = f.flight_number 
-	  and f.plane_type = p.plane_type;
+	as select Reservation_detail.reservation_number, Reservation_detail.flight_number, Reservation_detail.flight_date, Flight.airline_id, Flight.plane_type, Plane.plane_capacity, Reservation.ticketed
+	from Reservation_detail, Flight, Plane, Reservation
+	where Reservation_detail.reservation_number = Reservation.reservation_number 
+	and Reservation_detail.flight_number = Flight.flight_number 
+	and Flight.plane_type = Plane.plane_type
+	and Reservation.ticketed = 'Y';
 
 --gets the number of ticketed reservations for each plane
-create or replace view seatsReserved
-	as flight_number, count(flight_number) as seat_count
+create or replace view seatsReserved(flight_number, seat_count)
+	as select flight_number, count(flight_number)
 	from seatingInfo, System_time
-	having ((flight_date - c_date) * 24) <= 12 and ticketed = 'Y';
+	where ((flight_date - c_date) * 24) <= 12 
+	group by flight_number;
 
 create or replace trigger cancelReservation 
 before update of c_date on System_time
 referencing new as newVal old as oldVal
 for each row
-declare 
-	num_Passengers int;
-begin
-  Select Count(flight_number) into num_Passengers
-  From seatsReserved 
-  Having ((flight_date - :newVal.c_date) * 24) <= 12 and ticketed = 'Y') <  
-  
- 
+Declare
+	seats_used int;
+	seats_total int;
+Begin
  --deletes all the reservations 12 hours from the flight 
  Delete From Reservation
  Where Exists ( Select *
  				From Reservation_detail Join Reservation On Reservation_detail.reservation_number = Reservation.reservation_number
  				Where ((flight_date - :newVal.c_date) * 24) <= 12 				
  				And Reservation.ticketed = 'N');
- 
- IF
 
- END IF;
-end;
+ Select seat_count Into seats_used 
+ From seatsReserved, seatingInfo 
+ Where seatsReserved.flight_number = seatingInfo.flight_number;
+
+ Select plane_capacity into seats_total
+ From seatingInfo, seatsReserved
+ Where seatsReserved.flight_number = seatingInfo.flight_number;
+
+ If seats_used < seats_total Then
+ 	Update Flight
+ 	Set plane_type = downsize_plane(seats_used);
+ End If;
+End;
 /
