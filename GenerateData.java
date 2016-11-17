@@ -27,6 +27,7 @@ public class GenerateData
 	public static String DATES[] = {"01-JAN-2015 10:00:00", "01-MAR-2015 10:00:00", "01-SEP-2016 10:00:00"};
 	public static String CITIES[] = {"PIT", "JFK", "DCA", "DET", "PHI", "LTZ", "MCH", "CMP"};
 	public static String SCHEDULES[] = {"SMTW-F-", "S--WTF-", "-MTWTF-", "--TWTFS", "SMTWT--", "-M-WT--"};
+	public static String PT_OID[] = {"A010 001", "A020 001", "A060 002", "B030 005", "B070 006", "C070 009", "C100 010"};
 	public static String NAMES[];
 	//----------------------------------------------------------------------//
 	//                                 End                                  //
@@ -79,8 +80,10 @@ public class GenerateData
 		{
 			for(int i=0; i<100; i++)
 			{
-				String flightNum = "" + (i+1);;
-				String planeType = PLANE_TYPES[ThreadLocalRandom.current().nextInt(0, PLANE_TYPES.length)];
+				String flightNum = "" + (i+1);
+				String aId_Pt[] = PT_OID[ThreadLocalRandom.current().nextInt(0, PT_OID.length)].split(" ");
+				String airlineId = aId_Pt[1];		
+				String planeType = aId_Pt[0];
 
 				String deptCity = CITIES[ThreadLocalRandom.current().nextInt(0, CITIES.length)];			
 				String arrivalCity = "";
@@ -94,7 +97,7 @@ public class GenerateData
 				String weekSchedule = SCHEDULES[ThreadLocalRandom.current().nextInt(0, SCHEDULES.length)];
 		
 				String finalString = "";
-				finalString = "INSERT INTO Flight VALUES( '" + flightNum + "', '" + planeType + "', '" + deptCity + "', '"
+				finalString = "INSERT INTO Flight VALUES( '" + flightNum + "', '" + airlineId + "', '" + planeType + "', '" + deptCity + "', '"
 				+ arrivalCity + "', '" + depTime + "', '" + arrivalTime + "', '" + weekSchedule + "' );\n";					
 
 				bw.write(finalString);
@@ -126,11 +129,13 @@ public class GenerateData
 			}
 		}
 
+		String airlineId = AIRLINE_IDS[ThreadLocalRandom.current().nextInt(0, AIRLINE_IDS.length)];
+
 		String lowPrice = "" + ThreadLocalRandom.current().nextInt(100, 200); // Low prices are 100-199
 		String highPrice = "" + ThreadLocalRandom.current().nextInt(200, 300); // High prices are 200-299
 
 		String finalString = "";
-		finalString = "INSERT INTO Price VALUES( '" + deptCity + "', '" + arrivalCity + "', " + highPrice + ", "
+		finalString = "INSERT INTO Price VALUES( '" + deptCity + "', '" + arrivalCity + "', '" + airlineId + "', " + highPrice + ", "
 		+ lowPrice + " );\n";	
 
 		flightPrices.add(finalString);
@@ -172,10 +177,16 @@ public class GenerateData
 				String ccNumber = GenerateCCNumber();
 				String date = DATES[ThreadLocalRandom.current().nextInt(0, DATES.length)];
 				String ticketed = "" + ThreadLocalRandom.current().nextInt(0,2);
-							
+				String startCity = CITIES[ThreadLocalRandom.current().nextInt(0, CITIES.length)];			
+				String endCity = "";
+				do
+				{
+					endCity = CITIES[ThreadLocalRandom.current().nextInt(0, CITIES.length)];
+				}while(endCity.equals(startCity));
+
 				String finalString = "";
 				finalString = "INSERT INTO Reservation VALUES( '" + reservationNumber + "', '" + cid + "', " + cost + ", '"
-				+ ccNumber + "', to_date('" + date + "', 'DD-MON-YYYY HH24:MI:SS'), '" + ticketed + "' );\n";					
+				+ ccNumber + "', to_date('" + date + "', 'DD-MON-YYYY HH24:MI:SS'), '" + ticketed + "', '" + startCity + "', '" + endCity + "' );\n";					
 
 				bw.write(finalString);
 			}
@@ -201,6 +212,7 @@ public class GenerateData
 				String ccNumber = GenerateCCNumber();
 				String expireDate = DATES[ThreadLocalRandom.current().nextInt(0, DATES.length)];
 				String street = "Foo";
+				String city = "Lititz";
 				String state = "PA";
 				String phone = "1234567890";
 				String email = "foo@bar.null";
@@ -216,13 +228,13 @@ public class GenerateData
 				if(frequentMile.equals("NULL"))
 				{
 					finalString = "INSERT INTO Customer VALUES( '" + id + "', '" + salutation + "', '" + fName + "', '"
-					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'DD-MON-YYYY HH24:MI:SS'), '" + street + "', '" + state + "', '" + phone 
+					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'DD-MON-YYYY HH24:MI:SS'), '" + street + "', '" + city + "', '" + state + "', '" + phone 
 					+ "', '" + email + "', " + frequentMile + " );\n";
 				}
 				else
 				{
 					finalString = "INSERT INTO Customer VALUES( '" + id + "', '" + salutation + "', '" + fName + "', '"
-					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'DD-MON-YYYY HH24:MI:SS'), '" + street + "', '" + state + "', '" + phone 
+					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'DD-MON-YYYY HH24:MI:SS'), '" + street + "', '" + city + "', '" + state + "', '" + phone 
 					+ "', '" + email + "', '" + frequentMile + "' );\n";
 				}
 				

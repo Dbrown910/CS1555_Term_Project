@@ -112,6 +112,3 @@ create table System_time(
 	CONSTRAINT Date_PK 
 		PRIMARY KEY (c_date) DEFERRABLE
 );                                  
-
--- TODO
--- Create Triggers

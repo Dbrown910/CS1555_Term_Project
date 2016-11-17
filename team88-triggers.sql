@@ -1,3 +1,85 @@
+-- VIEWS
+--compiles necessary information about the reservation
+create or replace view seatingInfo
+	as select Reservation_detail.reservation_number, Reservation_detail.flight_number, Reservation_detail.flight_date, Flight.airline_id, Flight.plane_type, Plane.plane_capacity, Reservation.ticketed
+	from Reservation_detail, Flight, Plane, Reservation
+	where Reservation_detail.reservation_number = Reservation.reservation_number 
+	and Reservation_detail.flight_number = Flight.flight_number 
+	and Flight.plane_type = Plane.plane_type
+	and Reservation.ticketed = 'Y';
+
+--gets the number of ticketed reservations for each plane
+create or replace view seatsReserved(flight_number, seat_count)
+	as select flight_number, count(flight_number)
+	from seatingInfo, System_time
+	where ((flight_date - c_date) * 24) <= 12 
+	group by flight_number;
+
+-- FUNCTIONS
+CREATE OR REPLACE FUNCTION get_plane_capacity (flightNum in varchar) RETURN int
+AS
+capacity float;
+BEGIN
+	-- Get the capacity of that plane
+	SELECT plane_capacity into capacity
+	FROM Plane
+	WHERE plane_type = (-- Get the plane type
+						SELECT plane_type
+						FROM Flight
+						WHERE flight_number = flightNum
+						);
+
+	return (capacity);
+END;
+/
+
+CREATE OR REPLACE FUNCTION get_num_flight_reservations (flightNum in varchar) RETURN int
+AS
+number_of_reservations int;
+BEGIN
+	-- Get the number of reservations for this flight
+	SELECT COUNT(*) into number_of_reservations
+	FROM Flight
+	WHERE flight_number = flightNum;
+
+	return (number_of_reservations);
+END;
+/
+
+CREATE OR REPLACE FUNCTION get_new_plane (cap in int) RETURN char
+AS
+p_type char;
+BEGIN
+	-- Select the plane with the next highest capacity
+	SELECT plane_type into p_type
+	FROM (SELECT *
+			FROM Plane
+			WHERE plane_capacity > cap
+			ORDER BY plane_capacity ASC)
+	WHERE ROWNUM = 1;
+	
+	return (p_type);
+END;
+/
+
+--finds a new plane to accomadate a smaller group of reservations
+CREATE OR REPLACE FUNCTION downsize_plane (cap in int) RETURN char
+AS
+p_type char;
+BEGIN
+	-- Select the plane with the next highest capacity
+	SELECT plane_type into p_type
+	FROM (SELECT *
+			FROM Plane
+			WHERE plane_capacity > cap
+			ORDER BY plane_capacity DESC)
+	WHERE ROWNUM = 1;
+	
+	return (p_type);
+END;
+/
+
+-- TRIGGERS
 --1)
 create or replace trigger adjustTicket
 before update of leg on Reservation_detail
@@ -53,52 +135,6 @@ end;
 /
 
 --2)
-CREATE OR REPLACE FUNCTION get_plane_capacity (flightNum in varchar) RETURN int
-AS
-capacity float;
-BEGIN
-	-- Get the capacity of that plane
-	SELECT plane_capacity into capacity
-	FROM Plane
-	WHERE plane_type = (-- Get the plane type
-						SELECT plane_type
-						FROM Flight
-						WHERE flight_number = flightNum
-						);
-
-	return (capacity);
-END;
-/
-
-CREATE OR REPLACE FUNCTION get_num_flight_reservations (flightNum in varchar) RETURN int
-AS
-number_of_reservations int;
-BEGIN
-	-- Get the number of reservations for this flight
-	SELECT COUNT(*) into number_of_reservations
-	FROM Flight
-	WHERE flight_number = flightNum;
-
-	return (number_of_reservations);
-END;
-/
-
-CREATE OR REPLACE FUNCTION get_new_plane (cap in int) RETURN char
-AS
-p_type char;
-BEGIN
-	-- Select the plane with the next highest capacity
-	SELECT plane_type into p_type
-	FROM (SELECT *
-			FROM Plane
-			WHERE plane_capacity > cap
-			ORDER BY plane_capacity ASC)
-	WHERE ROWNUM = 1;
-	
-	return (p_type);
-END;
-/
-
 CREATE OR REPLACE TRIGGER planeUpgrade
 AFTER INSERT ON Reservation_detail
 FOR EACH ROW
@@ -114,39 +150,6 @@ END;
 /
 
 --3)
---finds a new plane to accomadate a smaller group of reservations
-CREATE OR REPLACE FUNCTION downsize_plane (cap in int) RETURN char
-AS
-p_type char;
-BEGIN
-	-- Select the plane with the next highest capacity
-	SELECT plane_type into p_type
-	FROM (SELECT *
-			FROM Plane
-			WHERE plane_capacity > cap
-			ORDER BY plane_capacity DESC)
-	WHERE ROWNUM = 1;
-	
-	return (p_type);
-END;
-/
-
---compiles necessary information about the reservation
-create or replace view seatingInfo
-	as select Reservation_detail.reservation_number, Reservation_detail.flight_number, Reservation_detail.flight_date, Flight.airline_id, Flight.plane_type, Plane.plane_capacity, Reservation.ticketed
-	from Reservation_detail, Flight, Plane, Reservation
-	where Reservation_detail.reservation_number = Reservation.reservation_number 
-	and Reservation_detail.flight_number = Flight.flight_number 
-	and Flight.plane_type = Plane.plane_type
-	and Reservation.ticketed = 'Y';
-
---gets the number of ticketed reservations for each plane
-create or replace view seatsReserved(flight_number, seat_count)
-	as select flight_number, count(flight_number)
-	from seatingInfo, System_time
-	where ((flight_date - c_date) * 24) <= 12 
-	group by flight_number;
-
 create or replace trigger cancelReservation 
 before update of c_date on System_time
 referencing new as newVal old as oldVal
