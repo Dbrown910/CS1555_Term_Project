@@ -4,28 +4,51 @@ before update of leg on Reservation_detail
 referencing new as newVal old as oldVal
 for each row
 declare 
- old_price int;
- upd_price int;
+ old_high_price int;
+ upd_high_price int;
+ old_low_price int;
+ upd_low_price int;
 begin
---get the price of the old leg
- Select high_price into old_price 
+--get the high price of the old leg
+ Select high_price into old_high_price 
  From Price Join Flight on Flight.airline_id = Price.airline_id 
  Where flight_number = :oldVal.flight_number;
 
---get the price of the new leg
- Select high_price into upd_price 
+ --get the low price of the old leg
+ Select low_price into old_low_price 
+ From Price Join Flight on Flight.airline_id = Price.airline_id 
+ Where flight_number = :oldVal.flight_number;
+
+--get the high price of the new leg
+ Select high_price into upd_high_price 
  From Price Join Flight on Flight.airline_id = Price.airline_id 
  Where flight_number = :newVal.flight_number;
 
-  --subtract the old price from the total cost
+ --get the low price of the new leg
+ Select low_price into upd_low_price 
+ From Price Join Flight on Flight.airline_id = Price.airline_id 
+ Where flight_number = :newVal.flight_number;
+
+  --subtract the old high price from the total cost
  update Reservation 
- set cost = cost - old_price 
+ set cost = cost - old_high_price 
  where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
  
- --add the price of the new leg to the cost
+ --add the new high price to the cost
  update Reservation 
- set cost = cost + upd_price 
+ set cost = cost + upd_high_price 
  where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
+
+   --subtract the old low price from the total cost
+ update Reservation 
+ set cost = cost - old_low_price 
+ where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
+ 
+ --add the new low price to the cost
+ update Reservation 
+ set cost = cost + upd_low_price 
+ where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
+
 end;
 /
 
@@ -139,6 +162,7 @@ Begin
  				Where ((flight_date - :newVal.c_date) * 24) <= 12 				
  				And Reservation.ticketed = 'N');
 
+--downsizes the plane if there is a smaller accomodation
  Select seat_count Into seats_used 
  From seatsReserved, seatingInfo 
  Where seatsReserved.flight_number = seatingInfo.flight_number;
