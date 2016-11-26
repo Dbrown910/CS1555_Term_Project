@@ -13,10 +13,9 @@ public class team88-admin_interface
 	private String password = "3906832";
 	private String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass";
 
-
 	public static void main(String args[]) throws IOException
 	{	
-		dbcon = DriverManager.getConnection(url, username, password);
+		dbcon = DriverManager.getConnection(url, uName, pw);
 
 		System.out.println("Which interface would you like to load?");
 		System.out.println("1: Admin");
@@ -24,6 +23,7 @@ public class team88-admin_interface
 
 		selection = s.nextInt();
 
+		// Admin
 		if(selection == 1)
 		{
 			System.out.println("Administrator Options");
@@ -39,7 +39,7 @@ public class team88-admin_interface
 
 			if(selection == 1)
 			{
-				String query = 
+				
 			}
 			else if(selection == 2)
 			{
@@ -62,6 +62,7 @@ public class team88-admin_interface
 				
 			}
 		}
+		// Customer
 		else if(selection = 2)
 		{
 
