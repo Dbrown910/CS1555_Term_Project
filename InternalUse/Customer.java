@@ -11,7 +11,7 @@ public class Customer
 	public static void main(String[] args)
 	{
 		String username = "cjs176";
-		String password = "@Minniedog8111";
+		String password = "@";
 
 		String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass";
 
