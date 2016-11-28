@@ -20,7 +20,6 @@ public class Customer
         // Open the connection
 		try
 		{
-
 			DriverManager.registerDriver (new oracle.jdbc.driver.OracleDriver());
 
 			connection = DriverManager.getConnection(url, username, password);
@@ -37,7 +36,7 @@ public class Customer
         
         if(input.equals("1"))
         {
-            AddCustomer();
+            CustomerActions.AddCustomer(connection);
         }
         
 //        // Sample Query
@@ -89,12 +88,7 @@ public class Customer
             System.out.println("Error connecting to database.  Machine Error: " +
                                Ex.toString());
         }
-	}
-    
-    private static void AddCustomer()
-    {
-        System.out.println("Add customer");
-    }
+	}      
     
     private static String GetInput()
     {
@@ -106,6 +100,8 @@ public class Customer
         System.out.println("1 - Add a customer");
         input = in.nextLine();
         
+        //in.close();
+
         return input;
     }
 }

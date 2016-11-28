@@ -24,7 +24,7 @@ public class GenerateData
 											"B010", "B020", "B030", "B040", "B050", "B060", "B070", "B080", "B090", "B100",
 											"C010", "C020", "C030", "C040", "C050", "C060", "C070", "C080", "C090", "C100"};
 	public static String SALUTATIONS[] = {"Mr", "Mrs", "Ms"};
-	public static String DATES[] = {"01-JAN-2015 10:00:00", "01-MAR-2015 10:00:00", "01-SEP-2016 10:00:00"};
+	public static String DATES[] = {"01/01/2015", "01/03/2015", "01/09/2016"};
 	public static String CITIES[] = {"PIT", "JFK", "DCA", "DET", "PHI", "LTZ", "MCH", "CMP"};
 	public static String SCHEDULES[] = {"SMTW-F-", "S--WTF-", "-MTWTF-", "--TWTFS", "SMTWT--", "-M-WT--"};
 	public static String PT_OID[] = {"A010 001", "A020 001", "A060 002", "B030 005", "B070 006", "C070 009", "C100 010"};
@@ -186,7 +186,7 @@ public class GenerateData
 
 				String finalString = "";
 				finalString = "INSERT INTO Reservation VALUES( '" + reservationNumber + "', '" + cid + "', " + cost + ", '"
-				+ ccNumber + "', to_date('" + date + "', 'DD-MON-YYYY HH24:MI:SS'), '" + ticketed + "', '" + startCity + "', '" + endCity + "' );\n";					
+				+ ccNumber + "', to_date('" + date + "', 'dd/mm/yyyy'), '" + ticketed + "', '" + startCity + "', '" + endCity + "' );\n";					
 
 				bw.write(finalString);
 			}
@@ -228,13 +228,13 @@ public class GenerateData
 				if(frequentMile.equals("NULL"))
 				{
 					finalString = "INSERT INTO Customer VALUES( '" + id + "', '" + salutation + "', '" + fName + "', '"
-					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'DD-MON-YYYY HH24:MI:SS'), '" + street + "', '" + city + "', '" + state + "', '" + phone 
+					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'dd/mm/yyyy'), '" + street + "', '" + city + "', '" + state + "', '" + phone 
 					+ "', '" + email + "', " + frequentMile + " );\n";
 				}
 				else
 				{
 					finalString = "INSERT INTO Customer VALUES( '" + id + "', '" + salutation + "', '" + fName + "', '"
-					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'DD-MON-YYYY HH24:MI:SS'), '" + street + "', '" + city + "', '" + state + "', '" + phone 
+					+ lName + "', '" + ccNumber + "', to_date('" + expireDate + "', 'dd/mm/yyyy'), '" + street + "', '" + city + "', '" + state + "', '" + phone 
 					+ "', '" + email + "', '" + frequentMile + "' );\n";
 				}
 				
