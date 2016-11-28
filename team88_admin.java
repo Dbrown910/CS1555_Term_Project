@@ -44,7 +44,7 @@ public class team88_admin
 			System.out.println("1: Erase the database");
 			System.out.println("2: Load airline information");
 			System.out.println("3: Load schedule information");
-			System.out.println("4: Load pricing information");
+			System.out.println("4: Edit or Load pricing information");
 			System.out.println("5: Load plane information");
 			System.out.println("6: Generate passenger manifest");
 
@@ -220,7 +220,109 @@ public class team88_admin
 			}
 			else if(selection == 4)
 			{
-				
+				System.out.println("Do you want to load new pricing data, or change existing prices? (L/C)");
+
+				String response = scan.nextLine();
+
+				if(response.charAt(0) = 'L')
+				{
+					String src_city = "";
+					String dest_city = "";
+					String airline_id = "";
+					Integer high_price = null;
+					Integer low_price = null;
+
+					//read in path of the file 
+					System.out.println("Enter the path of the file name:");
+					String file_path = scan.nextLine();
+					fr = new Scanner(new FileReader(file_path));
+
+					//for each line of the file
+					while(fr.hasNext())
+					{
+						//read in, and split on the spaces
+						file_line = fr.next();
+						
+						String[] line_tokens = file_line.split(" ");
+
+						src_city = line_tokens[0];
+						dest_city = line_tokens[1];
+						airline_id = line_tokens[2];
+						high_price = new Integer(line_tokens[3]);
+						low_price = new Integer(line_tokens[4]);
+
+						try
+				        {
+				            statement = dbcon.createStatement();
+				            String query = "INSERT INTO Price VALUES ('"+src_city+"', '"+dest_city+"', '"+airline_id+"', '"+high_price.intValue()+"', '"+low_price.intValue()+")";
+				            statement.executeQuery(query);    
+				            //resultSet = statement.executeQuery(query);
+				        }
+				        catch(SQLException Ex)
+				        {
+				            System.out.println("Error running the sample queries.  Machine Error: " +
+				                               Ex.toString());
+				        }
+				        finally
+				        {
+				            // CLose the statement
+				            try
+				            {
+				                if (statement != null) statement.close();
+				            }
+				            catch (SQLException e)
+				            {
+				                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+				            }
+				        }
+					}
+				}	
+				else if(response.charAt(0) = 'C')
+				{
+					String src_city = "";
+					String dest_city = "";
+					int high_price = 0;
+					int low_price = 0;
+
+					System.out.println("Enter the departure city (Three Letter Code)");
+					src_city = scan.nextLine();
+
+					System.out.println("Enter the destination city (Three Letter Code)");
+					dest_city = scan.nextLine();
+
+					System.out.println("Enter the high price of the flight");
+					high_price = scan.nextInt();
+
+					System.out.println("Enter the high price of the flight");
+					low_price = scan.nextInt();
+
+					try
+			        {
+			            statement = dbcon.createStatement();
+			            String query = "UPDATE Price "+
+			            			   "SET high_price = "+high_price+", low_price = "+low_price+
+			            			   "WHERE departue_city = "+src_city+" AND arrival_city = "+dest_city;
+			            statement.executeQuery(query);    
+			            //resultSet = statement.executeQuery(query);
+			        }
+			        catch(SQLException Ex)
+			        {
+			            System.out.println("Error running the sample queries.  Machine Error: " +
+			                               Ex.toString());
+			        }
+			        finally
+			        {
+			            // CLose the statement
+			            try
+			            {
+			                if (statement != null) statement.close();
+			            }
+			            catch (SQLException e)
+			            {
+			                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			            }
+			        }
+				}
 			}
 			else if(selection == 5)
 			{
@@ -281,7 +383,7 @@ public class team88_admin
 			}
 			else if(selection == 6)
 			{
-				
+					
 			}
 		}
 		// Customer
