@@ -7,13 +7,15 @@ public class team88_admin
 {
 	static Scanner scan = new Scanner(System.in);
 	static Scanner fr = null;
-	static int selection;
+	
 	private static Connection dbcon;
 	private static Statement statement;
+	private static PreparedStatement statement2;
 	private static ResultSet resultSet;
 	private static String username = "dmb147";
 	private static String password = "3906832";
 	private static String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass";
+	private static int selection;
 
 	public static void main(String args[]) throws IOException
 	{	
@@ -62,13 +64,12 @@ public class team88_admin
 				{
 					try
 			        {
-			            statement = dbcon.createStatement();
-			            String query = "";
+			            statement2 = dbcon.prepareStatement("DELETE FROM ?");
 
 			            for(String s : table_names)
 			            {
-			            	query = "DELETE  FROM "+s;    
-			            	statement.executeQuery(query);
+			            	statement2.setString(1,s); 
+			            	statement2.executeQuery();
 			               	//resultSet = statement.executeQuery(query);
 			            }
 			        }
@@ -110,25 +111,27 @@ public class team88_admin
 					//read in, and split on the spaces
 					file_line = fr.next();
 					
-					String[] line_tokens = file_line.split(" ");
+					String[] tokens = file_line.split(" ");
 					StringBuilder sb = new StringBuilder(50);
 
+					//cycles through the tokens of the input as given in example from Milestone 2, Task #2. Necessary to handle varying number of words in title
 					int i = 0;
-					id = line_tokens[i];
+					id = tokens[i];
 					i++;
 
-					while(Character.isLowerCase(line_tokens[i].charAt(line_tokens.length - 1)))
+					//checking for a lowercase last letter for all the words of the title
+					while(Character.isLowerCase(tokens[i].charAt(tokens.length - 1)))
 					{
-						sb.append(line_tokens[i]);
+						sb.append(tokens[i]);
 						i++;
 					}
 
 					name = sb.toString();
 					i++;
 
-					abbrev = line_tokens[i];
+					abbrev = tokens[i];
 
-					year_founded = new Integer(line_tokens[line_tokens.length - 1]);
+					year_founded = new Integer(tokens[tokens.length - 1]);
 
 					//build the insert query with the data and execute it
 					try
@@ -180,16 +183,17 @@ public class team88_admin
 					//read in, and split on the spaces
 					file_line = fr.next();
 					
-					String[] line_tokens = file_line.split(" ");
+					String[] tokens = file_line.split(" ");
 
-					flight_num = line_tokens[0];
-					airline_id = line_tokens[1];
-					plane_type = line_tokens[2];
-					src_city= line_tokens[3];
-					dest_city= line_tokens[4];
-					src_time = line_tokens[5];
-					dest_time = line_tokens[6];
-					weekly_schedule = line_tokens[7];
+					//asign tokens to their respective variables
+					flight_num = tokens[0];
+					airline_id = tokens[1];
+					plane_type = tokens[2];
+					src_city= tokens[3];
+					dest_city= tokens[4];
+					src_time = tokens[5];
+					dest_time = tokens[6];
+					weekly_schedule = tokens[7];
 
 					//build the insert query with the data and execute it
 					try
@@ -224,6 +228,7 @@ public class team88_admin
 
 				String response = scan.nextLine();
 
+				//if the user prompts to load the data
 				if(response.charAt(0) = 'L')
 				{
 					String src_city = "";
@@ -243,14 +248,15 @@ public class team88_admin
 						//read in, and split on the spaces
 						file_line = fr.next();
 						
-						String[] line_tokens = file_line.split(" ");
+						String[] tokens = file_line.split(" ");
 
-						src_city = line_tokens[0];
-						dest_city = line_tokens[1];
-						airline_id = line_tokens[2];
-						high_price = new Integer(line_tokens[3]);
-						low_price = new Integer(line_tokens[4]);
+						src_city = tokens[0];
+						dest_city = tokens[1];
+						airline_id = tokens[2];
+						high_price = new Integer(tokens[3]);
+						low_price = new Integer(tokens[4]);
 
+						//build the insert query with the data and execute it
 						try
 				        {
 				            statement = dbcon.createStatement();
@@ -277,6 +283,7 @@ public class team88_admin
 				        }
 					}
 				}	
+				//if the user prompts to edit the data
 				else if(response.charAt(0) = 'C')
 				{
 					String src_city = "";
@@ -345,14 +352,14 @@ public class team88_admin
 					//read in, and split on the spaces
 					file_line = fr.next();
 					
-					String[] line_tokens = file_line.split(" ");
+					String[] tokens = file_line.split(" ");
 
-					plane_type = line_tokens[0];
-					manufact = line_tokens[1];
-					capacity = new Integer(line_tokens[2]);
-					last_service = line_tokens[3];
-					year_made = new Integer(line_tokens[4]);
-					owner_id = line_tokens[5];
+					plane_type = tokens[0];
+					manufact = tokens[1];
+					capacity = new Integer(tokens[2]);
+					last_service = tokens[3];
+					year_made = new Integer(tokens[4]);
+					owner_id = tokens[5];
 
 					//build the insert query with the data and execute it
 					try
