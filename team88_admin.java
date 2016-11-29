@@ -407,19 +407,18 @@ public class team88_admin
 		        {
 		            statement = dbcon.createStatement();
 		            String query = "SELECT salutation, first_name, last_name " +
-		            			   "FROM Customer, Reservation, Reservation_detail" +
-		            			   "WHERE Reservation.cid = Customer.cid" +
-		            			   "AND Reservation_detail.reservation_number = Reservation.reservation_number" +
-		            			   "AND Reservation_detail.flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS')" +
-		            			   "AND Reservation_detail.flight_num = '" +flight_num+"'";
+		            			   "FROM allReservations " +
+		            			   "WHERE flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS') " +
+		            			   "AND flight_number = '" +flight_num+"'";
 		            statement.executeQuery(query);    
 		            resultSet = statement.executeQuery(query);
 
+		            System.out.println("Flight "+flight_num+" Passenger List for "+date);
+				    System.out.println("============================================================");
+					   	
 		            while (resultSet.next()) 
 				    {
-				    	System.out.println("Flight "+flight_num+" Passenger List for "+date);
-				    	System.out.println("============================================================");
-					   	System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+				    	System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
 				    }
 		        }
 		        catch(SQLException Ex)
