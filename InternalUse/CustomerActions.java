@@ -58,8 +58,8 @@ public class CustomerActions
 	        email = in.nextLine();
 
 	        // Capitalize the first and last name
-	        String fNameCap = fName.substring(0,1).toUpperCase() + fName.substring(1).toLowerCase();
-	        String lNameCap = lName.substring(0,1).toUpperCase() + lName.substring(1).toLowerCase();
+	        String fNameCap = Capitalize(fName);
+	        String lNameCap = Capitalize(lName);
 
 	        // If the same first and last name exist, throw an error and return
 	        statement = connection.createStatement();
@@ -155,6 +155,63 @@ public class CustomerActions
 		}
     }
 
+    // 2
+    public static void ShowCustomerInfo(Connection connection, String fName, String lName)
+    {
+		// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+    	try
+    	{	    	
+    		// Capitalize the names
+    		String fNameCap = Capitalize(fName);
+    		String lNameCap = Capitalize(lName);
+
+    		// Find the customer    	
+	    	statement = connection.createStatement();
+	        query = "SELECT * from customer where first_name = " + "'" + fNameCap + "'" + " AND last_name = " + "'" + lNameCap + "'";
+	        resultSet = statement.executeQuery(query);
+
+	        System.out.println("");
+
+	        // Print out the information
+	        while(resultSet.next())
+	        {
+	        	System.out.println("Cid:\t\t\t" + resultSet.getString(1));
+	        	System.out.println("Salutation:\t\t" + resultSet.getString(2));
+	        	System.out.println("First Name:\t\t" + resultSet.getString(3));
+	        	System.out.println("Last Name:\t\t" + resultSet.getString(4));
+	        	System.out.println("Credit Card Cumber:\t" + resultSet.getString(5));
+	        	System.out.println("Credit Card Expire Date:" + resultSet.getDate(6).toString());
+	        	System.out.println("Street:\t\t\t" + resultSet.getString(7));
+	        	System.out.println("City:\t\t\t" + resultSet.getString(8));
+	        	System.out.println("State:\t\t\t" + resultSet.getString(9));
+	        	System.out.println("Phone:\t\t\t" + resultSet.getString(10));
+	        	System.out.println("Email:\t\t\t" + resultSet.getString(11));
+	        	System.out.println("Frequent Miles:\t\t" + resultSet.getString(12));
+	        }
+		}
+		catch(SQLException e)
+		{
+			System.out.println("Error inserting the customer. Error: " + e.toString());
+		}
+		finally
+		{
+			try
+			{
+				if(statement != null) statement.close();
+				if(prepStatement != null) prepStatement.close();
+			}
+			catch(SQLException e)
+			{
+				System.out.println("Cannot close Statement. Error: " + e.toString());
+			}
+		}
+    }
+
     // Returns the number of tuples in a result set
     private static int GetNumRows(ResultSet resultSet)
     {
@@ -174,5 +231,11 @@ public class CustomerActions
     		System.out.println("Error counting the rows. Error: " + e.toString());
     		return -1;
     	}
+    }
+
+    // Capitalizes a string
+    private static String Capitalize(String s)
+    {
+    	return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
     }
 }

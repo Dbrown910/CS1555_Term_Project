@@ -32,11 +32,18 @@ public class Customer
 		}
 		
         String input;
-        input = GetInput();
+        input = GetActionInput();
         
         if(input.equals("1"))
         {
             CustomerActions.AddCustomer(connection);
+        }
+        else if(input.equals("2"))
+        {
+        	System.out.println("");
+        	String fName = PromptForInput("Enter the FIRST NAME of the customer you want to see:");
+        	String lName = PromptForInput("Enter the LAST NAME of the customer you want to see:");
+        	CustomerActions.ShowCustomerInfo(connection, fName, lName);
         }
 
         // Close the connection
@@ -51,7 +58,7 @@ public class Customer
         }
 	}      
     
-    private static String GetInput()
+    private static String GetActionInput()
     {
         String input;
         
@@ -59,6 +66,20 @@ public class Customer
         
         System.out.println("Enter a number to select an action:");
         System.out.println("1 - Add a customer");
+        System.out.println("2 - Show customer info");
+        input = in.nextLine();
+
+        return input;
+    }
+
+    // Gets a single input from a user given a query string
+    private static String PromptForInput(String promptText)
+    {
+    	String input;
+        
+        Scanner in = new Scanner(System.in);
+        
+        System.out.println(promptText);
         input = in.nextLine();
 
         return input;
