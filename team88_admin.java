@@ -54,14 +54,15 @@ public class team88_admin
 
 			if(selection == 1)
 			{
-				String[] table_names = {"Airline", "Plane", "Flight", "Price", "Customer", "Reservation", "Reservation_detail", "System_time"};
-
 				System.out.println("Do you really want to erase the database? (y/n):");
 
 				String response = scan.nextLine();
 
 				if(response.equals("y"))
 				{
+
+					String[] table_names = {"Airline", "Plane", "Flight", "Price", "Customer", "Reservation", "Reservation_detail", "System_time"};
+
 					try
 			        {
 			            statement2 = dbcon.prepareStatement("DELETE FROM ?");
@@ -407,9 +408,17 @@ public class team88_admin
 		            			   "FROM Customer, Reservation, Reservation_detail" +
 		            			   "WHERE Reservation.cid = Customer.cid" +
 		            			   "AND Reservation_detail.reservation_number = Reservation.reservation_number" +
+		            			   "AND Reservation_detail.flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS')" +
 		            			   "AND Reservation_detail.flight_num = " +flight_num;
 		            statement.executeQuery(query);    
 		            resultSet = statement.executeQuery(query);
+
+		            while (resultSet.next()) 
+				    {
+				    	System.out.println("Flight "+flight_num+" Passenger List for "+date);
+				    	System.out.println("============================================================");
+					   	System.out.println(resultSet.getString(1) + " " + resultSet.getString(2) + " " + resultSet.getString(3));
+				    }
 		        }
 		        catch(SQLException Ex)
 		        {
