@@ -448,7 +448,8 @@ public class team88_admin
 			System.out.println("4: Find all routes between two cities");
 			System.out.println("5: Find all routes between two cities for an airline");
 			System.out.println("6: Find all routes between two cities with available seats on a date");
-
+			System.out.println("7: Find all routes between two cities with available seats on a date for an airline");
+			
 			selection = scan.nextInt();
 
 			if(selection == 4)
@@ -465,7 +466,7 @@ public class team88_admin
 		            statement = dbcon.createStatement();
 		            String query = "SELECT flight_number, departure_city, departure_time, arrival_time " +
 		            			   "FROM Flight " +
-		            			   "WHERE departure_city= '"+src_city+"'" +
+		            			   "WHERE departure_city= '"+src_city+"' " +
 		            			   "AND arrival_city = '" +dest_city+"'";
 		            statement.executeQuery(query);    
 		            resultSet = statement.executeQuery(query);
@@ -514,8 +515,8 @@ public class team88_admin
 		            statement = dbcon.createStatement();
 		            String query = "SELECT Flight.airline_id, flight_number, departure_city, departure_time, arrival_time " +
 		            			   "FROM Flight JOIN Airline ON Flight.airline_id = Airline.airline_id " +
-		            			   "WHERE departure_city= '"+src_city+"'" +
-		            			   "AND airline_name= '"+airline_name+"'" +
+		            			   "WHERE departure_city= '"+src_city+"' " +
+		            			   "AND airline_name= '"+airline_name+"' " +
 		            			   "AND arrival_city = '" +dest_city+"'";
 		            statement.executeQuery(query);    
 		            resultSet = statement.executeQuery(query);
@@ -556,17 +557,19 @@ public class team88_admin
 				System.out.println("Enter the destination city: (Three Letter Code)");
 				String dest_city = scan.nextLine();
 
-				System.out.println("Enter the airline name:");
-				String airline_name = scan.nextLine();
+				System.out.println("Enter the flight date: (DD-MON-YYYY)");
+				String date = scan.nextLine();
 
 				try
 		        {
 		            statement = dbcon.createStatement();
-		            String query = "SELECT Flight.airline_id, flight_number, departure_city, departure_time, arrival_time " +
-		            			   "FROM Flight JOIN Airline ON Flight.airline_id = Airline.airline_id " +
-		            			   "WHERE departure_city= '"+src_city+"'" +
-		            			   "AND airline_name= '"+airline_name+"'" +
-		            			   "AND arrival_city = '" +dest_city+"'";
+		            String query = "SELECT Flight.flight_number, departure_city, departure_time, arrival_time " +
+		            			   "FROM Flight " + 
+		            			   "JOIN Reservation_detail ON Flight.flight_number = Reservation_detail.flight_number " +
+		            			   "JOIN Reservation ON Reservation_detail.reservation_number = Reservation.reservation_number " +
+		            			   "WHERE departure_city= '"+src_city+"' " +		 
+		            			   "AND arrival_city = '" +dest_city+"' " +
+		            			   "AND flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS') ";
 		            statement.executeQuery(query);    
 		            resultSet = statement.executeQuery(query);
 
@@ -577,6 +580,63 @@ public class team88_admin
 		            while (resultSet.next()) 
 				    {
 				    	System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t"+ resultSet.getString(3) + "\t" + resultSet.getString(4));
+				    }
+		        }
+		        catch(SQLException Ex)
+		        {
+		            System.out.println("Error running the sample queries.  Machine Error: " +
+		                               Ex.toString());
+		        }
+		        finally
+		        {
+		            // CLose the statement
+		            try
+		            {
+		                if (statement != null) statement.close();
+		            }
+		            catch (SQLException e)
+		            {
+		                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+		            }
+		        }
+			}
+			else if (selection == 7) 
+			{
+				System.out.println("Enter the departure city: (Three Letter Code)");
+				scan.nextLine();
+				String src_city = scan.nextLine();
+
+				System.out.println("Enter the destination city: (Three Letter Code)");
+				String dest_city = scan.nextLine();
+
+				System.out.println("Enter the airline name:");
+				String airline_name = scan.nextLine();
+
+				System.out.println("Enter the flight date: (DD-MON-YYYY)");
+				String date = scan.nextLine();
+
+				try
+		        {
+		            statement = dbcon.createStatement();
+		            String query = "SELECT Flight.airline_id, Flight.flight_number, departure_city, departure_time, arrival_time " +
+		            			   "FROM Flight " + 
+		            			   "JOIN Airline ON Airline.airline_id = Flight.airline_id " +
+		            			   "JOIN Reservation_detail ON Flight.flight_number = Reservation_detail.flight_number " +
+		            			   "JOIN Reservation ON Reservation_detail.reservation_number = Reservation.reservation_number " +
+		            			   "WHERE departure_city= '"+src_city+"' " +		 
+		            			   "AND arrival_city = '" +dest_city+"' " +
+		            			   "AND airline_name = '" +airline_name+"' " +
+		            			   "AND flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS') ";
+		            statement.executeQuery(query);    
+		            resultSet = statement.executeQuery(query);
+
+		            System.out.println("Flights from "+src_city+" to "+dest_city);
+		            System.out.println("Airline ID\tFlight No.\tDeparture City\tArrival City\tArrival Time");
+				    System.out.println("============================================================");
+					   	
+		            while (resultSet.next()) 
+				    {
+				    	System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t"+ resultSet.getString(3) + "\t" + resultSet.getString(4)+ "\t" + resultSet.getString(5));
 				    }
 		        }
 		        catch(SQLException Ex)
