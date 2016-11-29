@@ -45,6 +45,13 @@ public class Customer
         	String lName = PromptForInput("Enter the LAST NAME of the customer you want to see:");
         	CustomerActions.ShowCustomerInfo(connection, fName, lName);
         }
+        else if(input.equals("3"))
+        {
+        	System.out.println("");
+        	String cityA = PromptForInput("Enter the first city: ");
+        	String cityB = PromptForInput("Enter the second city: ");
+        	CustomerActions.FindPriceOfFlights(connection, cityA, cityB);
+        }
 
         // Close the connection
         try
@@ -56,7 +63,14 @@ public class Customer
             System.out.println("Error connecting to database.  Machine Error: " +
                                Ex.toString());
         }
-	}      
+	}  
+
+	// TODO
+	public static void Init(Connection connection)
+	{
+		// same code as main
+
+	}    
     
     private static String GetActionInput()
     {
@@ -67,6 +81,7 @@ public class Customer
         System.out.println("Enter a number to select an action:");
         System.out.println("1 - Add a customer");
         System.out.println("2 - Show customer info");
+        System.out.println("3 - Find price for flights between two cities");
         input = in.nextLine();
 
         return input;
