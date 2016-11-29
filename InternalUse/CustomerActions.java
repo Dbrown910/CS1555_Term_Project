@@ -289,6 +289,126 @@ public class CustomerActions
 		}
     }
 
+    // 4 TODO
+    public static void FindCityRoutes(Connection connection, String dep, String arr)
+    {
+        // DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+    	try
+    	{	    	
+    		// Capitalize the city names because that is how they are stored in the DB
+    		String depCity = Capitalize(dep);
+    		String arrCity = Capitalize(arr);
+
+    		// Find one way routes between the cities
+		}
+		// catch(SQLException e)
+		// {
+		// 	System.out.println("Error inserting the customer. Error: " + e.toString());
+		// }
+		finally
+		{
+			try
+			{
+				if(statement != null) statement.close();
+				if(prepStatement != null) prepStatement.close();
+			}
+			catch(SQLException e)
+			{
+				System.out.println("Cannot close Statement. Error: " + e.toString());
+			}
+		}
+    }
+
+    // 9
+    public static void ShowReservationInfo(Connection connection, String resNumber)
+    {
+    	// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+    	try
+    	{	   
+    		// Get the reservation
+    		statement = connection.createStatement();
+    		query = "SELECT * from Reservation where reservation_number = " + resNumber;
+    		resultSet = statement.executeQuery(query);
+
+    		// Reservation info
+    		String startCity = "";
+    		String endCity = "";    		
+	        int legs = 0;
+	        String[] flightNumbers = new String[10]; // just hardcode 10
+
+    		int count = 0;
+    		while(resultSet.next())
+    		{
+    			startCity = resultSet.getString(7);
+    			endCity = resultSet.getString(8);
+    			count ++;
+    		}
+
+    		// Exit if it doesn't exist
+    		if(count == 0)
+    		{
+    			System.out.println("The reservation " + resNumber + " does not exist in the database.");
+    			return;
+    		}
+
+    		// Get all legs of the reservation
+    		statement = connection.createStatement();
+	        query = "SELECT * from Reservation_detail where reservation_number = " + resNumber;	        
+	        resultSet = statement.executeQuery(query);
+
+	        // Get all the leg info
+	        while(resultSet.next())
+	        {
+	        	int leg = resultSet.getInt(4);
+	        	flightNumbers[leg] = resultSet.getString(2);
+
+	        	legs ++;	        	
+	        }
+
+	        // Print the initial info
+	        System.out.println("");
+	        System.out.println("Reservation " + resNumber + " has " + legs + " connecting flights between " + startCity + " and " + endCity + ".");
+
+	        for(int i=0; i<legs; i++)
+	        {
+	        	// Get the flight for this leg
+	        	statement = connection.createStatement();
+	        	query = "SELECT * from Flight where flight_numer = " + flightNumbers[i];	        
+	        	resultSet = statement.executeQuery(query);
+
+	        	resultSet.next();
+
+	        	System.out.println("Leg " + i + " is a flight from " + resultSet.getString(4) + " to " + resultSet.getString(5) + ".");
+	        }
+		}
+		catch(SQLException e)
+		{
+			System.out.println("Error inserting the customer. Error: " + e.toString());
+		}
+		finally
+		{
+			try
+			{
+				if(statement != null) statement.close();
+				if(prepStatement != null) prepStatement.close();
+			}
+			catch(SQLException e)
+			{
+				System.out.println("Cannot close Statement. Error: " + e.toString());
+			}
+		}
+    }
+
     // Returns the number of tuples in a result set
     private static int GetNumRows(ResultSet resultSet)
     {

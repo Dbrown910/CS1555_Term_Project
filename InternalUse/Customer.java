@@ -52,6 +52,19 @@ public class Customer
         	String cityB = PromptForInput("Enter the second city: ");
         	CustomerActions.FindPriceOfFlights(connection, cityA, cityB);
         }
+        else if(input.equals("4"))
+        {
+        	System.out.println("");
+        	String dep = PromptForInput("Enter the departure city: ");
+        	String arr = PromptForInput("Enter the arrival city: ");
+        	CustomerActions.FindCityRoutes(connection, dep, arr);
+        }
+        else if(input.equals("9"))
+        {
+        	System.out.println("");
+        	String resNumber = PromptForInput("Enter the desired reservation number: ");
+        	CustomerActions.ShowReservationInfo(connection, resNumber);
+        }
 
         // Close the connection
         try
@@ -82,6 +95,9 @@ public class Customer
         System.out.println("1 - Add a customer");
         System.out.println("2 - Show customer info");
         System.out.println("3 - Find price for flights between two cities");
+        System.out.println("4 - Find all routes between two cities");
+        System.out.println("9 - Show reservation info");
+
         input = in.nextLine();
 
         return input;
