@@ -15,6 +15,12 @@ create or replace view seatsReserved(flight_number, seat_count)
 	where ((flight_date - c_date) * 24) <= 12 
 	group by flight_number;
 
+--creates a list of reservations, flight numbers and flight dates
+create or replace view allReservations
+	as SELECT salutation, first_name, last_name, Reservation_detail.flight_number, flight_date 
+	   FROM Customer, Reservation, Reservation_detail 
+	   WHERE Reservation.cid = Customer.cid 
+	   AND Reservation_detail.reservation_number = Reservation.reservation_number;
 -- FUNCTIONS
 CREATE OR REPLACE FUNCTION get_plane_capacity (flightNum in varchar) RETURN int
 AS
