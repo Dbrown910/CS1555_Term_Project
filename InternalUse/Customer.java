@@ -65,6 +65,12 @@ public class Customer
         	String resNumber = PromptForInput("Enter the desired reservation number: ");
         	CustomerActions.ShowReservationInfo(connection, resNumber);
         }
+        else if(input.equals("10"))
+        {
+        	System.out.println("");
+        	String resNumber = PromptForInput("Enter the desired reservation number: ");
+        	CustomerActions.PurchaseTicket(connection, resNumber);
+        }
 
         // Close the connection
         try
@@ -96,7 +102,9 @@ public class Customer
         System.out.println("2 - Show customer info");
         System.out.println("3 - Find price for flights between two cities");
         System.out.println("4 - Find all routes between two cities");
+        //////
         System.out.println("9 - Show reservation info");
+        System.out.println("10 - Buy ticket from existing reservation");
 
         input = in.nextLine();
 

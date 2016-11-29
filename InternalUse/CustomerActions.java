@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.text.ParseException;
 import java.util.Scanner;
+import java.lang.InterruptedException;
 
 // This class provides the actions that can be taken from the customer interface
 public class CustomerActions
@@ -394,6 +395,62 @@ public class CustomerActions
 		catch(SQLException e)
 		{
 			System.out.println("Error inserting the customer. Error: " + e.toString());
+		}
+		finally
+		{
+			try
+			{
+				if(statement != null) statement.close();
+				if(prepStatement != null) prepStatement.close();
+			}
+			catch(SQLException e)
+			{
+				System.out.println("Cannot close Statement. Error: " + e.toString());
+			}
+		}
+    }
+
+    // 10
+    public static void PurchaseTicket(Connection connection, String resNumber)
+    {
+		// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+    	try
+    	{	   
+    		connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+
+    		// Update the reservation
+    		statement = connection.createStatement();
+    		query = "UPDATE Reservation set ticketed = '1' where reservation_number = " + resNumber;
+    		int result = statement.executeUpdate(query);
+
+    		// Sleep for 4
+    		Thread.sleep(4000);
+
+    		statement = connection.createStatement();
+    		query = "SELECT ticketed from Reservation where reservation_number = " + resNumber;
+    		resultSet = statement.executeQuery(query);
+
+    		while(resultSet.next())
+    		{
+    			if(resultSet.getString(1).equals("1"))
+    			{
+    				System.out.println("");
+    				System.out.println("The ticket for reservation " + resNumber + " has been bought!");
+    			}
+    		}
+		}
+		catch(SQLException e)
+		{
+			System.out.println("Error inserting the customer. Error: " + e.toString());
+		}
+		catch(InterruptedException e)
+		{
+			System.out.println("Interruption error. Error: " + e.toString());
 		}
 		finally
 		{
