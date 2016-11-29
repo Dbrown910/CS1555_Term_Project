@@ -28,7 +28,7 @@ create table Plane(
 	CONSTRAINT Plane_PK
 		PRIMARY KEY (plane_type, owner_id) DEFERRABLE,
 	CONSTRAINT Plane_to_Airline_FK
-		FOREIGN KEY (owner_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+		FOREIGN KEY (owner_id) REFERENCES Airline(airline_id) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE
 );
 
 create table Flight(
@@ -43,9 +43,9 @@ create table Flight(
 	CONSTRAINT Flight_PK
 		PRIMARY KEY (flight_number) DEFERRABLE,
 	CONSTRAINT Flight_to_Plane_FK
-		FOREIGN KEY (plane_type, airline_id) REFERENCES PLANE(plane_type, owner_id) INITIALLY DEFERRED DEFERRABLE,
+		FOREIGN KEY (plane_type, airline_id) REFERENCES PLANE(plane_type, owner_id) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE,
 	CONSTRAINT Flight_to_Airline_FK
-		FOREIGN KEY (airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+		FOREIGN KEY (airline_id) REFERENCES Airline(airline_id) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE
 );
 
 create table Price(
@@ -57,7 +57,7 @@ create table Price(
 	CONSTRAINT Price_PK
 		PRIMARY KEY (departure_city, arrival_city) DEFERRABLE,
 	CONSTRAINT Price_to_Airline_FK
-		FOREIGN KEY (airline_id) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+		FOREIGN KEY (airline_id) REFERENCES Airline(airline_id) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE
 );
 
 create table Customer(
@@ -76,7 +76,7 @@ create table Customer(
 	CONSTRAINT Customer_PK 
 		PRIMARY KEY (cid) DEFERRABLE,
 	CONSTRAINT Customer_to_Airline_FK
-		FOREIGN KEY (frequent_miles) REFERENCES Airline(airline_id) INITIALLY DEFERRED DEFERRABLE
+		FOREIGN KEY (frequent_miles) REFERENCES Airline(airline_id) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE
 );
 
 create table Reservation(
@@ -91,7 +91,7 @@ create table Reservation(
 	CONSTRAINT Reservation_PK 
 		PRIMARY KEY (reservation_number) DEFERRABLE,
 	CONSTRAINT Reservation_FK 
-		FOREIGN KEY (cid) REFERENCES Customer(cid) INITIALLY DEFERRED DEFERRABLE
+		FOREIGN KEY (cid) REFERENCES Customer(cid) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE
 );
 
 create table Reservation_detail(
@@ -102,9 +102,9 @@ create table Reservation_detail(
 	CONSTRAINT R_detail_PK 
 		PRIMARY KEY (reservation_number, leg) DEFERRABLE,
 	CONSTRAINT R_detail_to_Reservation_FK1 
-		FOREIGN KEY (reservation_number) REFERENCES Reservation(reservation_number) INITIALLY DEFERRED DEFERRABLE,
+		FOREIGN KEY (reservation_number) REFERENCES Reservation(reservation_number) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE,
 	CONSTRAINT R_detail_to_Flight_FK2 
-		FOREIGN KEY (flight_number) REFERENCES Flight(flight_number) INITIALLY DEFERRED DEFERRABLE
+		FOREIGN KEY (flight_number) REFERENCES Flight(flight_number) ON DELETE CASCADE INITIALLY DEFERRED DEFERRABLE
 );
 
 create table System_time(
