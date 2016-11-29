@@ -98,18 +98,22 @@ public class team88_admin
 				Integer year_founded = null;
 
 				//read in path of the file 
-				System.out.println("Enter the path of the file name:");
+				System.out.println("Enter the path of the file:");
+				scan.nextLine();
 				String file_path = scan.nextLine();
-				fr = new Scanner(new FileReader(file_path));
+				fr = new Scanner(new File(file_path).getAbsoluteFile());
 
 				//for each line of the file
-				while(fr.hasNext())
+				while(fr.hasNextLine())
 				{
 					//read in, and split on the spaces
-					file_line = fr.next();
+					file_line = fr.nextLine();
 					
 					String[] tokens = file_line.split(" ");
 					StringBuilder sb = new StringBuilder(50);
+
+					for(String s : tokens)
+						System.out.println(s);
 
 					//cycles through the tokens of the input as given in example from Milestone 2, Task #2. Necessary to handle varying number of words in title
 					int i = 0;
@@ -117,12 +121,13 @@ public class team88_admin
 					i++;
 
 					//checking for a lowercase last letter for all the words of the title
-					while(Character.isLowerCase(tokens[i].charAt(tokens.length - 1)))
+					while(Character.isLowerCase(tokens[i].charAt(tokens[i].length() - 1)))
 					{
-						sb.append(tokens[i]);
+						sb.append(tokens[i] + " ");
 						i++;
 					}
 
+					sb.deleteCharAt(sb.length() - 1);
 					name = sb.toString();
 					i++;
 
@@ -134,7 +139,7 @@ public class team88_admin
 					try
 			        {
 			            statement = dbcon.createStatement();
-			            String query = "INSERT INTO Airline VALUES ('"+id+"', '"+name+"', '"+abbrev+"', '"+year_founded.intValue()+")";
+			            String query = "INSERT INTO Airline VALUES ('"+id+"', '"+name+"', '"+abbrev+"', '"+year_founded.intValue()+"')";
 			            statement.executeQuery(query);    
 			            //resultSet = statement.executeQuery(query);
 			        }
@@ -170,15 +175,16 @@ public class team88_admin
 				String weekly_schedule = "";
 
 				//read in path of the file 
-				System.out.println("Enter the path of the file name:");
+				System.out.println("Enter the path of the file:");
+				scan.nextLine();
 				String file_path = scan.nextLine();
-				fr = new Scanner(new FileReader(file_path));
+				fr = new Scanner(new File(file_path).getAbsoluteFile());
 
 				//for each line of the file
-				while(fr.hasNext())
+				while(fr.hasNextLine())
 				{
 					//read in, and split on the spaces
-					file_line = fr.next();
+					file_line = fr.nextLine();
 					
 					String[] tokens = file_line.split(" ");
 
@@ -197,7 +203,7 @@ public class team88_admin
 			        {
 			            statement = dbcon.createStatement();
 			            String query = "INSERT INTO Flight VALUES ('"+flight_num+"', '"+airline_id+"', '"+plane_type+"', '"+src_city+"', '"+dest_city+"', '"+
-			            													src_time+"', '"+dest_time+"', '"+weekly_schedule+")";  
+			            													src_time+"', '"+dest_time+"', '"+weekly_schedule+"')";  
 						statement.executeQuery(query);
 			        }
 			        catch(SQLException Ex)
@@ -222,13 +228,12 @@ public class team88_admin
 			else if(selection == 4)
 			{
 				System.out.println("Do you want to load new pricing data, or change existing prices? (L/C)");
-
+				scan.nextLine();
 				String response = scan.nextLine();
 
 				//if the user prompts to load the data
 				if(response.charAt(0) == 'L')
 				{
-
 					String file_line = "";
 					String src_city = "";
 					String dest_city = "";
@@ -237,15 +242,16 @@ public class team88_admin
 					Integer low_price = null;
 
 					//read in path of the file 
-					System.out.println("Enter the path of the file name:");
+					System.out.println("Enter the path of the file:");
+					scan.nextLine();
 					String file_path = scan.nextLine();
-					fr = new Scanner(new FileReader(file_path));
+					fr = new Scanner(new File(file_path).getAbsoluteFile());
 
 					//for each line of the file
-					while(fr.hasNext())
+					while(fr.hasNextLine())
 					{
 						//read in, and split on the spaces
-						file_line = fr.next();
+						file_line = fr.nextLine();
 						
 						String[] tokens = file_line.split(" ");
 
@@ -259,7 +265,7 @@ public class team88_admin
 						try
 				        {
 				            statement = dbcon.createStatement();
-				            String query = "INSERT INTO Price VALUES ('"+src_city+"', '"+dest_city+"', '"+airline_id+"', '"+high_price.intValue()+"', '"+low_price.intValue()+")";
+				            String query = "INSERT INTO Price VALUES ('"+src_city+"', '"+dest_city+"', '"+airline_id+"', '"+high_price.intValue()+"', '"+low_price.intValue()+"')";
 				            statement.executeQuery(query);    
 				            //resultSet = statement.executeQuery(query);
 				        }
@@ -296,10 +302,10 @@ public class team88_admin
 					System.out.println("Enter the destination city (Three Letter Code)");
 					dest_city = scan.nextLine();
 
-					System.out.println("Enter the high price of the flight");
+					System.out.println("Enter the high price of the flight:");
 					high_price = scan.nextInt();
 
-					System.out.println("Enter the high price of the flight");
+					System.out.println("Enter the low price of the flight:");
 					low_price = scan.nextInt();
 
 					try
@@ -307,8 +313,8 @@ public class team88_admin
 			            statement = dbcon.createStatement();
 			            String query = "UPDATE Price "+
 			            			   "SET high_price = "+high_price+", low_price = "+low_price+
-			            			   "WHERE departue_city = "+src_city+" AND arrival_city = "+dest_city;
-			            statement.executeQuery(query);    
+			            			   "WHERE departure_city = '"+src_city+"' AND arrival_city = '"+dest_city+"'";
+			            statement.execute(query);    
 			            //resultSet = statement.executeQuery(query);
 			        }
 			        catch(SQLException Ex)
@@ -341,15 +347,16 @@ public class team88_admin
 				String owner_id = "";
 
 				//read in path of the file 
-				System.out.println("Enter the path of the file name:");
+				System.out.println("Enter the path of the file:");
+				scan.nextLine();
 				String file_path = scan.nextLine();
-				fr = new Scanner(new FileReader(file_path));
+				fr = new Scanner(new File(file_path).getAbsoluteFile());
 
 				//for each line of the file
-				while(fr.hasNext())
+				while(fr.hasNextLine())
 				{
 					//read in, and split on the spaces
-					file_line = fr.next();
+					file_line = fr.nextLine();
 					
 					String[] tokens = file_line.split(" ");
 
@@ -365,7 +372,7 @@ public class team88_admin
 			        {
 			            statement = dbcon.createStatement();
 			            String query = "INSERT INTO Plane VALUES ('"+plane_type+"', '"+manufact+"', '"+capacity.intValue()+"', to_date('"+last_service+"', 'DD-MON-YYYY HH24:MI:SS'), '"+
-			            													year_made.intValue()+"', '"+owner_id+")"; 
+			            													year_made.intValue()+"', '"+owner_id+"')"; 
 			            statement.executeQuery(query); 
 			        }
 			        catch(SQLException Ex)
@@ -390,11 +397,10 @@ public class team88_admin
 			else if(selection == 6)
 			{
 				System.out.println("Enter the flight number:");
-
+				scan.nextLine();
 				String flight_num = scan.nextLine();
 
-				System.out.println("Enter the flight date: (MM/DD/YYYY)");
-
+				System.out.println("Enter the flight date: (DD-MON-YYYY)");
 				String date = scan.nextLine();
 
 				try
@@ -405,7 +411,7 @@ public class team88_admin
 		            			   "WHERE Reservation.cid = Customer.cid" +
 		            			   "AND Reservation_detail.reservation_number = Reservation.reservation_number" +
 		            			   "AND Reservation_detail.flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS')" +
-		            			   "AND Reservation_detail.flight_num = " +flight_num;
+		            			   "AND Reservation_detail.flight_num = '" +flight_num+"'";
 		            statement.executeQuery(query);    
 		            resultSet = statement.executeQuery(query);
 
