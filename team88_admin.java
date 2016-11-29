@@ -32,7 +32,7 @@ public class team88_admin
 			e.printStackTrace();
 		}
 
-		System.out.println("Which interface would you like to load?");
+		System.out.println("Which interface would you like to access?");
 		System.out.println("1: Admin");
 		System.out.println("2: Customer");
 
@@ -56,27 +56,23 @@ public class team88_admin
 			{
 				System.out.println("Do you really want to erase the database? (y/n):");
 
+				scan.nextLine();
 				String response = scan.nextLine();
 
 				if(response.equals("y"))
 				{
-
 					String[] table_names = {"Airline", "Plane", "Flight", "Price", "Customer", "Reservation", "Reservation_detail", "System_time"};
 
 					try
 			        {
-			            statement2 = dbcon.prepareStatement("DELETE FROM ?");
+			            statement = dbcon.createStatement();
 
 			            for(String s : table_names)
-			            {
-			            	statement2.setString(1,s); 
-			            	statement2.executeQuery();
-			               	//resultSet = statement.executeQuery(query);
-			            }
+			   				statement.executeUpdate("DELETE FROM "+s);		               	
 			        }
 			        catch(SQLException Ex)
 			        {
-			            System.out.println("Error running the sample queries.  Machine Error: " +
+			            System.out.println("Error running the function.  Machine Error: " +
 			                               Ex.toString());
 			        }
 			        finally
