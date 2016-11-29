@@ -229,8 +229,10 @@ public class team88_admin
 				String response = scan.nextLine();
 
 				//if the user prompts to load the data
-				if(response.charAt(0) = 'L')
+				if(response.charAt(0) == 'L')
 				{
+
+					String file_line = "";
 					String src_city = "";
 					String dest_city = "";
 					String airline_id = "";
@@ -284,7 +286,7 @@ public class team88_admin
 					}
 				}	
 				//if the user prompts to edit the data
-				else if(response.charAt(0) = 'C')
+				else if(response.charAt(0) =='C')
 				{
 					String src_city = "";
 					String dest_city = "";
@@ -390,7 +392,42 @@ public class team88_admin
 			}
 			else if(selection == 6)
 			{
-					
+				System.out.println("Enter the flight number:");
+
+				String flight_num = scan.nextLine();
+
+				System.out.println("Enter the flight date: (MM/DD/YYYY)");
+
+				String date = scan.nextLine();
+
+				try
+		        {
+		            statement = dbcon.createStatement();
+		            String query = "SELECT salutation, first_name, last_name " +
+		            			   "FROM Customer, Reservation, Reservation_detail" +
+		            			   "WHERE Reservation.cid = Customer.cid" +
+		            			   "AND Reservation_detail.reservation_number = Reservation.reservation_number" +
+		            			   "AND Reservation_detail.flight_num = " +flight_num;
+		            statement.executeQuery(query);    
+		            resultSet = statement.executeQuery(query);
+		        }
+		        catch(SQLException Ex)
+		        {
+		            System.out.println("Error running the sample queries.  Machine Error: " +
+		                               Ex.toString());
+		        }
+		        finally
+		        {
+		            // CLose the statement
+		            try
+		            {
+		                if (statement != null) statement.close();
+		            }
+		            catch (SQLException e)
+		            {
+		                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+		            }
+		        }
 			}
 		}
 		// Customer
