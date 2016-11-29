@@ -212,6 +212,83 @@ public class CustomerActions
 		}
     }
 
+    // 3
+    public static void FindPriceOfFlights(Connection connection, String a, String b)
+    {
+		// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+    
+    	try
+    	{	    	
+    		// Upper case the city name, that's how they are stored in the DB
+	    	String cityA = a.toUpperCase();
+	    	String cityB = b.toUpperCase();
+
+	    	// To keep track of the results
+	    	int lowAtoB = 0;
+		    int lowBtoA = 0;
+		    int highAtoB = 0;
+		    int highBtoA = 0;
+
+	    	// high low prices for one-way from A to B	
+			statement = connection.createStatement();			
+		    query = "SELECT * from PRICE where departure_city = " + "'" + cityA + "'" + " AND arrival_city = " + "'" + cityB + "'";
+		    resultSet = statement.executeQuery(query);		    
+
+
+		    // Print out the information
+		    System.out.println("");
+		    System.out.println("High and Low prices for a flight from " + cityA + " to " + cityB + ".");
+	        while(resultSet.next())
+	        {
+	        	lowAtoB = resultSet.getInt(5);
+	        	highAtoB = resultSet.getInt(4);
+
+	        	System.out.println("Low Price: " + lowAtoB + "\tHighPrice: " + highAtoB);
+	        }
+
+	        // high low prices for one-way from B to A	
+			statement = connection.createStatement();			
+		    query = "SELECT * from PRICE where departure_city = " + "'" + cityB + "'" + " AND arrival_city = " + "'" + cityA + "'";
+		    resultSet = statement.executeQuery(query);		    
+
+		    // Print out the information
+		    System.out.println("");
+		    System.out.println("High and Low prices for a flight from " + cityB + " to " + cityA + ".");
+	        while(resultSet.next())
+	        {
+	        	lowBtoA = resultSet.getInt(5);
+	        	highBtoA = resultSet.getInt(4);
+
+	        	System.out.println("Low Price: " + lowBtoA + "\tHighPrice: " + highBtoA);
+	        }
+
+	        // Print the round trip prices
+	        System.out.println("");
+	        System.out.println("Round Trip prices between city " + cityA + " and city " + cityB + ".");
+	        System.out.println("Low Price: " + (lowAtoB + lowBtoA) + "\tHigh Price: " + (highAtoB + highBtoA));
+		}
+		catch(SQLException e)
+		{
+			System.out.println("Error inserting the customer. Error: " + e.toString());
+		}
+		finally
+		{
+			try
+			{
+				if(statement != null) statement.close();
+				if(prepStatement != null) prepStatement.close();
+			}
+			catch(SQLException e)
+			{
+				System.out.println("Cannot close Statement. Error: " + e.toString());
+			}
+		}
+    }
+
     // Returns the number of tuples in a result set
     private static int GetNumRows(ResultSet resultSet)
     {
