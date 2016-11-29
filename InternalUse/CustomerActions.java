@@ -13,7 +13,7 @@ public class CustomerActions
     	PreparedStatement prepStatement = null;
     	ResultSet resultSet;
     	String query;
-    	
+
     	try
     	{	    		    	
 	    	// Prepare the statement
@@ -57,13 +57,49 @@ public class CustomerActions
 	        System.out.println("Email --");
 	        email = in.nextLine();
 
-	        // TODO
-	        // If the same first and last name exist, throw an error and re-prompt
+	        // Capitalize the first and last name
+	        String fNameCap = fName.substring(0,1).toUpperCase() + fName.substring(1).toLowerCase();
+	        String lNameCap = lName.substring(0,1).toUpperCase() + lName.substring(1).toLowerCase();
 
-	        // TODO
+	        // If the same first and last name exist, throw an error and return
+	        statement = connection.createStatement();
+	        query = "SELECT * from customer where first_name = " + "'" + fNameCap + "'" + " AND last_name = " + "'" + lNameCap + "'";
+	        resultSet = statement.executeQuery(query);
+
+	        int numRows = GetNumRows(resultSet);	        
+
+	        if(numRows == -1)
+	        {
+	        	System.out.println("Could not count the number of rows, aborting");
+	        }
+	        else if(numRows > 0)
+	        {	        
+	        	System.out.println("A customer with that first and last name already exists");
+	        	return;
+	        }
+
 	        // Assign a unique cid
-	        // Fake it for now
-	        String cid = "400";
+	        String cid;
+
+	        // Select all the customers
+	        statement = connection.createStatement();
+	        query = "SELECT cid from customer";
+	        resultSet = statement.executeQuery(query);
+
+	        // Find the highest cid, make the new cid 1 higher
+	        int highest = 0;
+	        while(resultSet.next())
+	        {
+	        	int id = Integer.parseInt(resultSet.getString(1));
+
+	        	if(id > highest)
+	        	{
+	        		highest = id;
+	        	}
+	        }
+
+	        highest += 1; // The new cid is 1 higher than the highest
+	        cid = highest + "";
 
 	        // Format the date
 	        // dd/mm/yyyy
@@ -73,8 +109,8 @@ public class CustomerActions
 	        // Insert query values
 	        prepStatement.setString(1, cid);
 	        prepStatement.setString(2, salutation);
-	        prepStatement.setString(3, fName);
-	        prepStatement.setString(4, lName);
+	        prepStatement.setString(3, fNameCap);
+	        prepStatement.setString(4, lNameCap);
 	        prepStatement.setString(5, ccNum);
 	        prepStatement.setDate(6, date_reg);
 	        prepStatement.setString(7, street);
@@ -90,6 +126,9 @@ public class CustomerActions
 	        statement = connection.createStatement();
 	        query = "SELECT * from customer where cid = 400";
 	        resultSet = statement.executeQuery(query);
+
+	        // TODO
+	        // Commit the change
 
 	        // Print out the cid
 	        System.out.println("Customer Added! Your PittRewards number is " + cid);
@@ -114,5 +153,26 @@ public class CustomerActions
 				System.out.println("Cannot close Statement. Error: " + e.toString());
 			}
 		}
+    }
+
+    // Returns the number of tuples in a result set
+    private static int GetNumRows(ResultSet resultSet)
+    {
+    	int count = 0;
+
+    	try
+    	{
+			while (resultSet.next())
+		    {		   
+				count++;
+		    }
+
+		    return count;
+    	}
+    	catch(SQLException e)
+    	{
+    		System.out.println("Error counting the rows. Error: " + e.toString());
+    		return -1;
+    	}
     }
 }

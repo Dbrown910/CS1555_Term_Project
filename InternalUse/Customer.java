@@ -38,46 +38,7 @@ public class Customer
         {
             CustomerActions.AddCustomer(connection);
         }
-        
-//        // Sample Query
-//        try
-//        {
-//            // Form the query
-//            statement = connection.createStatement();
-//            String query = "SELECT * from Airline";
-//        
-//            // Get the result
-//            resultSet = statement.executeQuery(query);
-//        
-//            int counter = 1;
-//        
-//            // Print the results
-//            while(resultSet.next())
-//            {
-//                System.out.println("Record " + counter + ": " + resultSet.getString(1)
-//                                   + " " + resultSet.getString(2) + " " + resultSet.getString(3)
-//                                   + " " + resultSet.getInt(4));
-//                counter ++;
-//            }
-//        }
-//        catch(SQLException Ex)
-//        {
-//            System.out.println("Error running the sample queries.  Machine Error: " +
-//                               Ex.toString());
-//        }
-//        finally
-//        {
-//            // CLose the statement
-//            try
-//            {
-//                if (statement != null) statement.close();
-//            }
-//            catch (SQLException e)
-//            {
-//                System.out.println("Cannot close Statement. Machine error: "+e.toString());
-//            }
-//        }
-        
+
         // Close the connection
         try
         {
@@ -99,8 +60,6 @@ public class Customer
         System.out.println("Enter a number to select an action:");
         System.out.println("1 - Add a customer");
         input = in.nextLine();
-        
-        //in.close();
 
         return input;
     }
