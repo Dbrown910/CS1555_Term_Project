@@ -128,9 +128,6 @@ public class CustomerActions
 	        query = "SELECT * from customer where cid = 400";
 	        resultSet = statement.executeQuery(query);
 
-	        // TODO
-	        // Commit the change
-
 	        // Print out the cid
 	        System.out.println("Customer Added! Your PittRewards number is " + cid);
 		}
@@ -290,26 +287,343 @@ public class CustomerActions
 		}
     }
 
-    // 4 TODO
-    public static void FindCityRoutes(Connection connection, String dep, String arr)
+    // 4
+    public static void FindCityRoutes(Connection connection, String src, String dest)
     {
-        // DB variables
+    	// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+        try
+        {
+        	String src_city = src.toUpperCase();
+        	String dest_city = dest.toUpperCase();
+
+            statement = connection.createStatement();
+            query = "SELECT flight_number, departure_city, departure_time, arrival_time " +
+            			   "FROM Flight " +
+            			   "WHERE departure_city= '"+src_city+"' " +
+            			   "AND arrival_city = '" +dest_city+"'";
+            statement.executeQuery(query);    
+            resultSet = statement.executeQuery(query);
+
+            System.out.println("Flights from "+src_city+" to "+dest_city);
+            System.out.println("Flight No.\tDeparture City\tArrival City\tArrival Time");
+		    System.out.println("============================================================");
+			   	
+            while (resultSet.next()) 
+		    {
+		    	System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t"+ resultSet.getString(3) + "\t" + resultSet.getString(4));
+		    }
+        }
+        catch(SQLException Ex)
+        {
+            System.out.println("Error running the sample queries.  Machine Error: " +
+                               Ex.toString());
+        }
+        finally
+        {
+            try
+            {
+                if (statement != null) statement.close();
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+        }
+    }
+
+    // 5
+    public static void FindCityRoutesWithAirline(Connection connection, String src, String dest, String airline_name)
+    {
+    	// DB variables
     	Statement statement = null;
     	PreparedStatement prepStatement = null;
     	ResultSet resultSet;
     	String query;
 
     	try
-    	{	    	
-    		// Capitalize the city names because that is how they are stored in the DB
-    		String depCity = Capitalize(dep);
-    		String arrCity = Capitalize(arr);
+        {
+        	String src_city = src.toUpperCase();
+        	String dest_city = dest.toUpperCase();
 
-    		// Find one way routes between the cities
+
+            statement = connection.createStatement();
+            query = "SELECT Flight.airline_id, flight_number, departure_city, departure_time, arrival_time " +
+            			   "FROM Flight JOIN Airline ON Flight.airline_id = Airline.airline_id " +
+            			   "WHERE departure_city= '"+src_city+"' " +
+            			   "AND airline_name= '"+airline_name+"' " +
+            			   "AND arrival_city = '" +dest_city+"'";
+            statement.executeQuery(query);    
+            resultSet = statement.executeQuery(query);
+
+            System.out.println("Flights from "+src_city+" to "+dest_city);
+            System.out.println("Airline ID\tFlight No.\tDeparture City\tArrival City\tArrival Time");
+		    System.out.println("============================================================");
+			   	
+            while (resultSet.next()) 
+		    {
+		    	System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t"+ resultSet.getString(3) + "\t" + resultSet.getString(4)+ "\t" + resultSet.getString(5));
+		    }
+        }
+        catch(SQLException Ex)
+        {
+            System.out.println("Error running the sample queries.  Machine Error: " +
+                               Ex.toString());
+        }
+        finally
+        {
+            // CLose the statement
+            try
+            {
+                if (statement != null) statement.close();
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+        }
+    }
+
+    // 6
+    public static void FindRoutesWithSeats(Connection connection, String src, String dest, String date)
+    {
+    	// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+    	try
+        {
+        	String src_city = src.toUpperCase();
+        	String dest_city = dest.toUpperCase();
+
+            statement = connection.createStatement();
+            query = "SELECT Flight.flight_number, departure_city, departure_time, arrival_time " +
+            			   "FROM Flight " + 
+            			   "JOIN Reservation_detail ON Flight.flight_number = Reservation_detail.flight_number " +
+            			   "JOIN Reservation ON Reservation_detail.reservation_number = Reservation.reservation_number " +
+            			   "WHERE departure_city= '"+src_city+"' " +		 
+            			   "AND arrival_city = '" +dest_city+"' " +
+            			   "AND flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS') ";
+            statement.executeQuery(query);    
+            resultSet = statement.executeQuery(query);
+
+            System.out.println("Flights from "+src_city+" to "+dest_city);
+            System.out.println("Flight No.\tDeparture City\tArrival City\tArrival Time");
+		    System.out.println("============================================================");
+			   	
+            while (resultSet.next()) 
+		    {
+		    	System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t"+ resultSet.getString(3) + "\t" + resultSet.getString(4));
+		    }
+        }
+        catch(SQLException Ex)
+        {
+            System.out.println("Error running the sample queries.  Machine Error: " +
+                               Ex.toString());
+        }
+        finally
+        {
+            // CLose the statement
+            try
+            {
+                if (statement != null) statement.close();
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+        }
+	}
+
+	// 7
+	public static void FindRoutesWithSeatsOnAirline(Connection connection, String src, String dest, String date, String airline_name)
+	{
+		// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+		try
+        {
+        	String src_city = src.toUpperCase();
+        	String dest_city = dest.toUpperCase();
+
+            statement = connection.createStatement();
+            query = "SELECT Flight.airline_id, Flight.flight_number, departure_city, departure_time, arrival_time " +
+            			   "FROM Flight " + 
+            			   "JOIN Airline ON Airline.airline_id = Flight.airline_id " +
+            			   "JOIN Reservation_detail ON Flight.flight_number = Reservation_detail.flight_number " +
+            			   "JOIN Reservation ON Reservation_detail.reservation_number = Reservation.reservation_number " +
+            			   "WHERE departure_city= '"+src_city+"' " +		 
+            			   "AND arrival_city = '" +dest_city+"' " +
+            			   "AND airline_name = '" +airline_name+"' " +
+            			   "AND flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS') ";
+            statement.executeQuery(query);    
+            resultSet = statement.executeQuery(query);
+
+            System.out.println("Flights from "+src_city+" to "+dest_city);
+            System.out.println("Airline ID\tFlight No.\tDeparture City\tArrival City\tArrival Time");
+		    System.out.println("============================================================");
+			   	
+            while (resultSet.next()) 
+		    {
+		    	System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t"+ resultSet.getString(3) + "\t" + resultSet.getString(4)+ "\t" + resultSet.getString(5));
+		    }
+        }
+        catch(SQLException Ex)
+        {
+            System.out.println("Error running the sample queries.  Machine Error: " +
+                               Ex.toString());
+        }
+        finally
+        {
+            // CLose the statement
+            try
+            {
+                if (statement != null) statement.close();
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+        }
+	}
+
+    // 8
+    public static void AddReservation(Connection connection)
+    {
+    	// DB variables
+    	Statement statement = null;
+    	PreparedStatement prepStatement = null;
+    	ResultSet resultSet;
+    	String query;
+
+    	try
+    	{	    		    		    
+	        Scanner in = new Scanner(System.in);
+
+	        String[] flightNums, deptDates;
+	        flightNums = new String[4]; // max of 4 legs
+	        deptDates = new String[4]; // max of 4 legs
+
+	        int legs = 0;
+	        // Max of 4 legs
+	        while(legs < 4)
+	        {
+	        	String flightNum, deptDate;
+	
+	        	System.out.println("Enter the FLIGHT NUMBER for leg " + (legs + 1) + " of your reservation.");
+	        	flightNum = in.nextLine();
+
+	        	if(flightNum.equals("0") && legs > 0)
+	        	{
+	        		break;
+	        	}
+	        	else if(flightNum.equals("0") && legs == 0)
+	        	{
+	        		System.out.println("You must have at least 1 leg before quitting");
+	        		System.out.println("");
+	        		continue;
+	        	}
+
+	        	System.out.println("Enter the DEPARTURE DATE for leg " + (legs + 1) + " of your reservation. (dd/mm/yyyy)");
+	        	deptDate = in.nextLine();
+
+	        	// Save the input
+	        	flightNums[legs] = flightNum;
+	        	deptDates[legs] = deptDate;
+
+	        	legs ++;
+	        }
+
+	        // We now have all the data, make sure there are enough seats
+	        boolean enoughSeats = true;
+
+	        for(int i=0; i<legs; i++)
+	        {
+	        	int maxCapacity;
+
+	        	// Find the max capacity
+	        	statement = connection.createStatement();
+	        	query = "SELECT plane_type, airline_id from Flight where flight_number = " + flightNums[i];
+	        	resultSet = statement.executeQuery(query);
+
+	        	resultSet.next();
+
+
+	        	statement = connection.createStatement();
+	        	query = "SELECT plane_capacity from Plane where plane_type = " + "'" + resultSet.getString(1) + "'" + " AND owner_id = " + "'" + resultSet.getString(2) + "'";
+	        	resultSet = statement.executeQuery(query);
+
+	        	resultSet.next();
+
+	        	maxCapacity = resultSet.getInt(1);
+
+	        	// Find the current capacity
+	        	statement = connection.createStatement();
+	        	query = "SELECT COUNT(*) from Reservation_detail where flight_number = " + flightNums[i];
+	        	resultSet = statement.executeQuery(query);
+
+	        	resultSet.next();
+
+	        	int flightCap = resultSet.getInt(1);
+
+	        	// The plane is full
+	        	if(flightCap >= maxCapacity)
+	        	{
+	        		enoughSeats = false;
+
+	        		System.out.println("There are not enough seats on the flight with flight number " + flightNums[i]);
+	        		break;
+	        	}
+	        }
+
+	        if(enoughSeats)
+	        {
+	        	// Assign a unique cid
+		        String rNumber;
+
+		        // Select all the customers
+		        statement = connection.createStatement();
+		        query = "SELECT reservation_number from reservation";
+		        resultSet = statement.executeQuery(query);
+
+		        // Find the highest id, make the new id 1 higher
+		        int highest = 0;
+		        while(resultSet.next())
+		        {
+		        	int id = Integer.parseInt(resultSet.getString(1));
+
+		        	if(id > highest)
+		        	{
+		        		highest = id;
+		        	}
+		        }
+
+		        highest += 1; // The new cid is 1 higher than the highest
+		        rNumber = highest + "";
+
+		        System.out.println("Your reservation has been made. Your unique reservation number is " + rNumber);
+
+		        // Insert the reservation
+
+		        // Insert the reservation_detail for each leg
+	        }
 		}
-		// catch(SQLException e)
+		catch(SQLException e)
+		{
+			System.out.println("Error adding the reservation. Error: " + e.toString());
+		}
+		// catch(ParseException e)
 		// {
-		// 	System.out.println("Error inserting the customer. Error: " + e.toString());
+		// 	System.out.println("Error parsing the date. Error: " + e.toString());
 		// }
 		finally
 		{

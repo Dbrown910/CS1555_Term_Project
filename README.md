@@ -13,3 +13,17 @@ team88-triggers.sql - This script will create all the triggers along with their 
 <br>
 team88-data.sql - This script will populate the DB with arbitrary data
 </p>
+
+<p>
+Milestone 2 Notes:
+<br>
+TO COMPILE: <h5> javac *.java </h5>
+<br>
+TO RUN: <h5> java team88_interface </h5>
+<br>
+team88_interface.java - The main driver program
+<br>
+Customer.java - The driver for the customer interface
+<br>
+CustomerActions.java - The implementation of all ten actions in the customer interface
+</p>
