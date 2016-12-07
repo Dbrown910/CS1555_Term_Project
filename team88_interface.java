@@ -111,7 +111,10 @@ public class team88_interface
 					//read in, and split on the spaces
 					file_line = fr.nextLine();
 					
-					String[] tokens = file_line.split(" ");
+					///////////////////////////////////////////////////////////////////
+					String[] tokens = file_line.split(" ");// TODO : SPLIT WITH (",");
+					///////////////////////////////////////////////////////////////////
+
 					StringBuilder sb = new StringBuilder(50);
 
 					for(String s : tokens)

@@ -7,11 +7,7 @@
 <p>
 Milestone 1 Notes:
 <br>
-team88-db.sql - This script creates the tables and the triggers
-<br>
-team88-triggers.sql - This script will create all the triggers along with their necessary procedues, functions and views
-<br>
-team88-data.sql - This script will populate the DB with arbitrary data
+team88-db.sql - This script creates the tables, triggers and adds data to the database
 </p>
 
 <p>
