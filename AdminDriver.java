@@ -226,32 +226,52 @@ public class AdminDriver
 			}
 		}
 		
-
-		for (int k = 0; k < 10; k++)
+		try
+    	{
+	        statement = connection.createStatement();
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AZC', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AWD', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AEE', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AEB', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'ARN', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'ATM', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AYV', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AOA', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'APS', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'AZC', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'AWD', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'AEE', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'AEB', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'ARN', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'ATM', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'AYV', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'AOA', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'AZC', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'AWD', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'AEE', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'AEB', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'ARN', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'ATM', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'AYV', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'AOA', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'APS', '003', '200', '100')");
+	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'APS', '003', '200', '100')");
+    	}
+		catch(SQLException e)
+		{
+			System.out.println("Error inserting the customer. Error: " + e.toString());
+		}
+		finally
 		{
 			try
-	    	{
-		        statement = connection.createStatement();
-		        query = "INSERT INTO Price VALUES ('', '', '', '', '', '')";
-	    	}
+			{
+				if(statement != null) statement.close();
+			}
 			catch(SQLException e)
 			{
-				System.out.println("Error inserting the customer. Error: " + e.toString());
-			}
-			finally
-			{
-				try
-				{
-					statement.executeUpdate("DELETE FROM Price");			//delete the inserts to be redone
-					if(statement != null) statement.close();
-				}
-				catch(SQLException e)
-				{
-					System.out.println("Cannot close Statement. Error: " + e.toString());
-				}
+				System.out.println("Cannot close Statement. Error: " + e.toString());
 			}
 		}
-
 	}
 
 	private static void LoadPlane(Connection connection) throws IOException
@@ -299,6 +319,8 @@ public class AdminDriver
 				}
 			}
 		}
+
+		System.out.println("Input file 5 successfuly entered");
 	}
 
 	private static void GenerateManifest(Connection connection)
@@ -307,8 +329,8 @@ public class AdminDriver
     	Statement statement = null;
     	ResultSet resultSet;
     	String query;
-    	String[] dates = {""};
-    	String[] flight_nums = {""};
+    	String[] dates = {"03/09/2016","12/16/2015","02/07/2016","04/10/2016","05/08/2016"};
+    	String[] flight_nums = {"92","93","94","95","96"};
 
     	for(String date : dates)
     	{
@@ -317,9 +339,9 @@ public class AdminDriver
 		    	try
 		    	{
 			        statement = connection.createStatement();
-			        query = "SELECT salutation, first_name, last_name " +
+			         query = "SELECT salutation, first_name, last_name " +
 				            			   "FROM allReservations " +
-				            			   "WHERE flight_date = to_date('"+date+"', 'DD-MON-YYYY HH24:MI:SS') " +
+				            			   "WHERE flight_date = to_date('"+date+"', 'MM/DD/YYYY') " +
 				            			   "AND flight_number = '" +flight_num+"'";
 		            statement.executeQuery(query);    
 		            resultSet = statement.executeQuery(query);
