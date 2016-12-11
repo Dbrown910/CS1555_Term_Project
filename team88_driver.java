@@ -6,8 +6,8 @@ import java.text.ParseException;
 public class team88_driver
 {
 	private static Connection connection;
-	private static String username = "cjs176";
-	private static String password = "@Minniedog8111";
+	private static String username = "";
+	private static String password = "";
 	private static String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass";
 
 	public static void main(String args[])
@@ -25,15 +25,6 @@ public class team88_driver
 			e.printStackTrace();
 		}
 
-		System.out.println("\n###################################################");
-		System.out.println("#                                                 #");
-		System.out.println("#   EXECUTING ADMINISTRATOR INTERFACE FUNCTIONS   #");
-		System.out.println("#                                                 #");
-		System.out.println("###################################################\n");
-
-		// Do all admin queries
-		AdminDriver.Begin(connection);
-
 		System.out.println("\n##############################################");
 		System.out.println("#                                            #");
 		System.out.println("#   EXECUTING CUSTOMER INTERFACE FUNCTIONS   #");
@@ -42,6 +33,15 @@ public class team88_driver
 
 		// Do all customer queries
 		CustomerDriver.Begin(connection);
+
+		System.out.println("\n###################################################");
+		System.out.println("#                                                 #");
+		System.out.println("#   EXECUTING ADMINISTRATOR INTERFACE FUNCTIONS   #");
+		System.out.println("#                                                 #");
+		System.out.println("###################################################\n");
+
+		// Do all admin queries
+		AdminDriver.Begin(connection);
 
 		// Close the connection
 		try
