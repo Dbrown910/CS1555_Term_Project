@@ -70,7 +70,9 @@ public class team88_interface
 			            statement = dbcon.createStatement();
 
 			            for(String s : table_names)
-			   				statement.executeUpdate("DELETE FROM "+s);		               	
+			   				statement.executeUpdate("DELETE FROM "+s);
+
+
 			        }
 			        catch(SQLException Ex)
 			        {
@@ -112,7 +114,7 @@ public class team88_interface
 					file_line = fr.nextLine();
 					
 					///////////////////////////////////////////////////////////////////
-					String[] tokens = file_line.split(" ");// TODO : SPLIT WITH (",");
+					String[] tokens = file_line.split(",");// TODO : SPLIT WITH (",");
 					///////////////////////////////////////////////////////////////////
 
 					StringBuilder sb = new StringBuilder(50);
@@ -191,7 +193,7 @@ public class team88_interface
 					//read in, and split on the spaces
 					file_line = fr.nextLine();
 					
-					String[] tokens = file_line.split(" ");
+					String[] tokens = file_line.split(",");
 
 					//asign tokens to their respective variables
 					flight_num = tokens[0];
@@ -258,7 +260,7 @@ public class team88_interface
 						//read in, and split on the spaces
 						file_line = fr.nextLine();
 						
-						String[] tokens = file_line.split(" ");
+						String[] tokens = file_line.split(",");
 
 						src_city = tokens[0];
 						dest_city = tokens[1];
@@ -363,7 +365,7 @@ public class team88_interface
 					//read in, and split on the spaces
 					file_line = fr.nextLine();
 					
-					String[] tokens = file_line.split(" ");
+					String[] tokens = file_line.split(",");
 
 					plane_type = tokens[0];
 					manufact = tokens[1];

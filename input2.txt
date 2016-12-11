@@ -1,0 +1,20 @@
+011,United Airlines,UAL,Chicago,1931
+012,All Nippon Airways,ANA,Tokyo,1952
+013,Delta Air Lines,DAL,Georgia,1924
+014,Hawaiin Airlines,HAL,Honolulu,1929
+015,JetBlue Airlines,JBU,New York,1988
+016,Sun Country Airlines,SCX,Minneapolis,1982
+017,Virgin America,VRD,San Francisco,2004
+018,Endeavor Air,FLG,Minneapolis,2001
+019,Express One International,Houston,1986
+020,Imagine Air, AXE,Seattle,2006
+021,Shuttle America,TCF,Chicago,1971
+022,Songbird Airways,SGB,Miami,1990
+023,SkyWest Aiirlines,SKW,Denver,1972
+024,Swift Air,SWQ,Phoenix,1997
+025,Trans States Airlines,LOF,Cleveland,1982
+026,Ultimate Air Shuttle,UJC,Cincinnati,2009
+027,West Air,PCM,Las Vegas,1968
+028,Xtra Airways,CXP,San Antonio,1987
+029,Centurion Air Cargo,CWC,Miami,1985
+030,Castle Aviation,CSJ,Akron,1986
