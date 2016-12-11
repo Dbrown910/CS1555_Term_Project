@@ -649,7 +649,7 @@ public class CustomerDriver
 
     		// Update the reservation
     		statement = connection.createStatement();
-    		query = "UPDATE Reservation set ticketed = '1' where reservation_number = " + resNumber;
+    		query = "UPDATE Reservation set ticketed = 'Y' where reservation_number = " + resNumber;
     		int result = statement.executeUpdate(query);
 
     		// Sleep for 4
@@ -661,7 +661,7 @@ public class CustomerDriver
 
     		while(resultSet.next())
     		{
-    			if(resultSet.getString(1).equals("1"))
+    			if(resultSet.getString(1).equals("Y"))
     			{
     				System.out.println("The ticket for reservation " + resNumber + " has been bought!");
     			}

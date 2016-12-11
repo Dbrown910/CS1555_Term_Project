@@ -23,3 +23,20 @@ Customer.java - The driver for the customer interface
 <br>
 CustomerActions.java - The implementation of all ten actions in the customer interface
 </p>
+
+<p>
+Milestone 2 Notes:
+<br>
+TO COMPILE: <h5> javac *.java </h5>
+<br>
+TO RUN: <h5> java team88_driver </h5>
+<br>
+team88_driver.java - The main driver program
+<br>
+CustomerDriver.java - The driver for the customer interface
+<br>
+AdminDriver.java - The driver for the admin interface
+<br>
+Notes: The driver will execute customer actions, then execute admin actions. After the admin actions are executed, the db file will be deleted. So
+if you want to run it again you need to run the team88-db.sql file first.
+</p>

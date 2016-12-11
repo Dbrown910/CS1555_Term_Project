@@ -5,32 +5,7 @@ import java.text.ParseException;
 
 public class AdminDriver
 {
-	private static Connection dbcon;
-	private static Statement statement;
-	private static ResultSet resultSet;
-	private static String username = "dmb147";
-	private static String password = "3906832";
-	private static String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass";
-
-	public static void main(String args[]) throws IOException
-	{	
-		 // Open the connection
-		try
-		{
-			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			dbcon = DriverManager.getConnection(url, username, password);
-        }
-		catch(Exception e)
-		{
-			System.out.println("Error connecting to the database. Error: ");
-
-			e.printStackTrace();
-		}
-
-		Begin(dbcon);
-	}
-
-	public static void Begin(Connection connection) throws IOException
+	public static void Begin(Connection connection)
 	{
 		System.out.println("--------------------");
 		System.out.println("----- Action 2 -----");
@@ -76,7 +51,7 @@ public class AdminDriver
     	ResultSet resultSet;
     	String query;
     	
-    	System.out.println("Eraasing the Database");
+    	System.out.println("Erasing the Database");
 
     	try
     	{
@@ -123,7 +98,7 @@ public class AdminDriver
 		}
 	}
 
-	private static void LoadAirline(Connection connection) throws IOException
+	private static void LoadAirline(Connection connection)
 	{
 		Scanner fr = null;
 		// DB variables
@@ -131,46 +106,53 @@ public class AdminDriver
     	ResultSet resultSet;
     	String query;
     	String file_line;
-
-		fr = new Scanner(new File("input2.txt").getAbsoluteFile());
-		System.out.println("Testing input file 2");
-
-		while(fr.hasNextLine())
+	
+		try
 		{
-			//read in, and split on the commas
-			file_line = fr.nextLine();
+			fr = new Scanner(new File("input2.txt"));
+			System.out.println("Testing input file 2");
 
-			String[] tokens = file_line.split(",");
+			while(fr.hasNextLine())
+			{			
+				//read in, and split on the commas
+				file_line = fr.nextLine();
 
-			try
-	        {
+				String[] tokens = file_line.split(",");
+
 		        statement = connection.createStatement();
 		        query = "INSERT INTO Airline VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+tokens[2]+"', '"+Integer.parseInt(tokens[4])+"')";
 		        statement.executeQuery(query);
-		    }
-	        catch(SQLException Ex)
-	        {
-	            System.out.println("Error running the sample queries.  Machine Error: " +
-	                               Ex.toString());
-	        }
-	        finally
-	        {
-	            // CLose the statement
-	            try
-	            {
-	                if (statement != null) statement.close();
-	            }
-	            catch (SQLException e)
-	            {
-	                System.out.println("Cannot close Statement. Machine error: "+e.toString());
-	            }
-	        }
-	    }
+		       
+	    	}
+		}
+		catch(SQLException Ex)
+        {
+            System.out.println("Error running the sample queries.  Machine Error: " +
+                               Ex.toString());
+        }
+        catch(FileNotFoundException Ex)
+        {
+        	System.out.println("File not found. Machine Error: " +
+                               Ex.toString());
+        }
+        finally
+        {
+            // CLose the statement
+            try
+            {
+                if (statement != null) statement.close();
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+        }
+		
 
 	    System.out.println("Input file 2 successfully inserted");
 	}
 
-	private static void LoadSchedule(Connection connection) throws IOException
+	private static void LoadSchedule(Connection connection)
 	{
 		Scanner fr = null;
 		// DB variables
@@ -179,48 +161,56 @@ public class AdminDriver
     	String query;
     	String file_line;
 
-    	fr = new Scanner(new File("input3.txt").getAbsoluteFile());
-    	System.out.println("Testing input file 3");
-
-		//for each line of the file
-		while(fr.hasNextLine())
+		try
 		{
-			//read in, and split on the spaces
-			file_line = fr.nextLine();
-			
-			String[] tokens = file_line.split(",");
+			fr = new Scanner(new File("input3.txt"));
+		    System.out.println("Testing input file 3");
 
-			//build the insert query with the data and execute it
-			try
-	        {
+			//for each line of the file
+			while(fr.hasNextLine())
+			{				
+				System.out.println("hger");
+				//read in, and split on the spaces
+				file_line = fr.nextLine();
+				System.out.println("1");
+				String[] tokens = file_line.split(",");
+System.out.println("2");
+				//build the insert query with the data and execute it
 	            statement = connection.createStatement();
 	            query = "INSERT INTO Flight VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+tokens[2]+"', '"+tokens[3]+"', '"+tokens[4]+"', '"+
 	            													tokens[5]+"', '"+tokens[6]+"', '"+tokens[7]+"')";  
-				statement.executeQuery(query);
-	        }
-	        catch(SQLException Ex)
-	        {
-	            System.out.println("Error running the sample queries.  Machine Error: " +
-	                               Ex.toString());
-	        }
-	        finally
-	        {
-	            // CLose the statement
-	            try
-	            {
-	                if (statement != null) statement.close();
-	            }
-	            catch (SQLException e)
-	            {
-	                System.out.println("Cannot close Statement. Machine error: "+e.toString());
-	            }
-	        }
-	    }	
+				statement.executeQuery(query);		       
+				System.out.println("3");
+		    }
+		}
+		catch(SQLException Ex)
+        {
+            System.out.println("Error running the sample queries.  Machine Error: " +
+                               Ex.toString());
+        }
+        catch(FileNotFoundException Ex)
+        {
+        	System.out.println("File not found. Machine Error: " +
+                               Ex.toString());
+        }
+        finally
+        {
+            // CLose the statement
+            try
+            {
+                if (statement != null) statement.close();
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Cannot close Statement. Machine error: "+e.toString());
+            }
+        }
+			
 
 	    System.out.println("Input file 3 successfully inserted");	
 	}
 
-	private static void LoadPricing(Connection connection) throws IOException
+	private static void LoadPricing(Connection connection)
 	{
 		Scanner fr = null;
 		// DB variables
@@ -228,48 +218,29 @@ public class AdminDriver
     	ResultSet resultSet;
     	String query;
     	String file_line;
-
-		fr = new Scanner(new File("input4.txt").getAbsoluteFile());
-		System.out.println("Testing input file 4\n");
-
-		//for each line of the file
-		while(fr.hasNextLine())
-		{
-			//read in, and split on the spaces
-			file_line = fr.nextLine();
-			
-			String[] tokens = file_line.split(",");
-			int temp1, temp2;
-			temp1 = Integer.parseInt(tokens[3]);
-			temp2 = Integer.parseInt(tokens[4]);
-
-	    	try
-	    	{
-		        statement = connection.createStatement();
-		        query = "INSERT INTO Price VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+tokens[2]+"', '"+temp1+"', '"+temp2+"')";
-	    	}
-			catch(SQLException e)
-			{
-				System.out.println("Error inserting the customer. Error: " + e.toString());
-			}
-			finally
-			{
-				try
-				{
-					if(statement != null) statement.close();
-				}
-				catch(SQLException e)
-				{
-					System.out.println("Cannot close Statement. Error: " + e.toString());
-				}
-			}
-		}
-
-		System.out.println("Input file 4 successfully inserted");
-		
+	
 		try
-    	{
-    		System.out.println("Testing inserts by the user");
+		{
+			fr = new Scanner(new File("input4.txt"));
+			System.out.println("Testing input file 4\n");
+
+			//for each line of the file
+			while(fr.hasNextLine())
+			{
+				//read in, and split on the spaces
+				file_line = fr.nextLine();
+				
+				String[] tokens = file_line.split(",");
+				int temp1, temp2;
+				temp1 = Integer.parseInt(tokens[3]);
+				temp2 = Integer.parseInt(tokens[4]);
+
+		        statement = connection.createStatement();
+		        query = "INSERT INTO Price VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+tokens[2]+"', '"+temp1+"', '"+temp2+"')";				
+			}
+
+			System.out.println("Input file 4 successfully inserted");
+			System.out.println("Testing inserts by the user");
 
 	        statement = connection.createStatement();
 	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AZC', '003', '200', '100')");
@@ -299,11 +270,71 @@ public class AdminDriver
 	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'AOA', '003', '200', '100')");
 	        statement.executeQuery("INSERT INTO Price VALUES('ACM', 'APS', '003', '200', '100')");
 	        statement.executeQuery("INSERT INTO Price VALUES('ABM', 'APS', '003', '200', '100')");
-    	}
+		}
 		catch(SQLException e)
 		{
 			System.out.println("Error inserting the customer. Error: " + e.toString());
 		}
+		catch(FileNotFoundException Ex)
+        {
+        	System.out.println("File not found. Machine Error: " +
+                               Ex.toString());
+        }
+		finally
+		{
+			try
+			{
+				if(statement != null) statement.close();
+			}
+			catch(SQLException e)
+			{
+				System.out.println("Cannot close Statement. Error: " + e.toString());
+			}
+		}		
+
+		System.out.println("User input successful inserted");
+	}
+
+	private static void LoadPlane(Connection connection)
+	{
+		Scanner fr = null; 
+		// DB variables
+    	Statement statement = null;
+    	ResultSet resultSet;
+    	String query;
+    	String file_line = "";
+
+    	try
+    	{
+    		fr = new Scanner(new File("input5.txt"));
+			System.out.println("Testing input file 5");
+
+			//for each line of the file
+			while(fr.hasNextLine())
+			{
+				//read in, and split on the spaces
+				file_line = fr.nextLine();
+				
+				String[] tokens = file_line.split(",");
+				int temp1, temp2;
+				temp1 = Integer.parseInt(tokens[2]);
+				temp2 = Integer.parseInt(tokens[4]);
+
+		        statement = connection.createStatement();
+		        query = "INSERT INTO Plane VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+temp1+"', to_date('"+tokens[3]+"', 'DD-MON-YYYY HH24:MI:SS'), '"+
+		            													temp2+"', '"+tokens[5]+"')";
+		        resultSet = statement.executeQuery(query);		    				
+			}
+    	}
+    	catch(SQLException e)
+		{
+			System.out.println("Error inserting the customer. Error: " + e.toString());
+		}
+		catch(FileNotFoundException Ex)
+        {
+        	System.out.println("File not found. Machine Error: " +
+                               Ex.toString());
+        }
 		finally
 		{
 			try
@@ -315,57 +346,7 @@ public class AdminDriver
 				System.out.println("Cannot close Statement. Error: " + e.toString());
 			}
 		}
-
-		System.out.println("User input successful inserted");
-	}
-
-	private static void LoadPlane(Connection connection) throws IOException
-	{
-		Scanner fr = null; 
-		// DB variables
-    	Statement statement = null;
-    	ResultSet resultSet;
-    	String query;
-    	String file_line = "";
-
-		fr = new Scanner(new File("input5.txt").getAbsoluteFile());
-		System.out.println("Testing input file 5");
-
-		//for each line of the file
-		while(fr.hasNextLine())
-		{
-			//read in, and split on the spaces
-			file_line = fr.nextLine();
-			
-			String[] tokens = file_line.split(",");
-			int temp1, temp2;
-			temp1 = Integer.parseInt(tokens[2]);
-			temp2 = Integer.parseInt(tokens[4]);
-
-	    	try
-	    	{
-		        statement = connection.createStatement();
-		        query = "INSERT INTO Plane VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+temp1+"', to_date('"+tokens[3]+"', 'DD-MON-YYYY HH24:MI:SS'), '"+
-		            													temp2+"', '"+tokens[5]+"')";
-		        resultSet = statement.executeQuery(query);
-	    	}
-			catch(SQLException e)
-			{
-				System.out.println("Error inserting the customer. Error: " + e.toString());
-			}
-			finally
-			{
-				try
-				{
-					if(statement != null) statement.close();
-				}
-				catch(SQLException e)
-				{
-					System.out.println("Cannot close Statement. Error: " + e.toString());
-				}
-			}
-		}
-
+		
 		System.out.println("Input file 5 successfully inserted");
 	}
 
