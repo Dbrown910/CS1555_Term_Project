@@ -117,25 +117,19 @@ begin
  From Price Join Flight on Flight.airline_id = Price.airline_id 
  Where flight_number = :newVal.flight_number;
 
-  --subtract the old high price from the total cost
- update Reservation 
- set cost = cost - old_high_price 
- where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
- 
- --add the new high price to the cost
- update Reservation 
- set cost = cost + upd_high_price 
- where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
+  --adjust the cost of the high price if necessary
+ IF old_high_price != upd_high_price THEN
+ 	update Reservation 
+ 	set cost = cost - old_high_price + upd_high_price 
+ 	where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
+ END IF;
 
-   --subtract the old low price from the total cost
- update Reservation 
- set cost = cost - old_low_price 
- where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
- 
- --add the new low price to the cost
- update Reservation 
- set cost = cost + upd_low_price 
- where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
+   --sadjust the cost of the low price if necessary
+ IF old_low_price != upd_low_price THEN
+ 	update Reservation 
+ 	set cost = cost - old_low_price + upd_low_price 
+ 	where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
+ END IF;
 
 end;
 /

@@ -5,6 +5,30 @@ import java.text.ParseException;
 
 public class AdminDriver
 {
+	private static Connection dbcon;
+	private static Statement statement;
+	private static ResultSet resultSet;
+	private static String username = "dmb147";
+	private static String password = "3906832";
+	private static String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass";
+
+	public static void main(String args[]) throws IOException
+	{	
+		 // Open the connection
+		try
+		{
+			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			dbcon = DriverManager.getConnection(url, username, password);
+        }
+		catch(Exception e)
+		{
+			System.out.println("Error connecting to the database. Error: ");
+
+			e.printStackTrace();
+		}
+
+		Begin(dbcon);
+	}
 
 	public static void Begin(Connection connection) throws IOException
 	{
@@ -52,6 +76,8 @@ public class AdminDriver
     	ResultSet resultSet;
     	String query;
     	
+    	System.out.println("Eraasing the Database");
+
     	try
     	{
     		String[] table_names = {"Airline", "Plane", "Flight", "Price", "Customer", "Reservation", "Reservation_detail", "System_time"};
@@ -67,12 +93,16 @@ public class AdminDriver
 			 	statement.executeQuery("INSERT INTO Plane VALUES('A010', 'Airabon', 100, to_date('01-JAN-2015 10:00:00', 'DD-MON-YYYY HH24:MI:SS'), 2015, '001')");	
 			 	statement.executeQuery("INSERT INTO Flight VALUES( '1', '001', 'A010', 'PHI', 'LTZ', '1200', '2200', '-M-WT--' )");
 			 	statement.executeQuery("INSERT INTO Price VALUES( 'CMP', 'PHI', '001', 258, 177 )");
-			 	statement.executeQuery("INSERT INTO Customer VALUES( '1', 'Mrs', 'Fletcher', 'Zahl', '0925960155412105', to_date('01/01/2015', 'dd/mm/yyyy'), 'Foo', 'Lititz', 'PA', '1234567890', 'foo@bar.null', '001' )");	 	
-			 	statement.executeQuery("INSERT INTO Reservation VALUES( '1', '90', 258, '0221724026632400', to_date('01/09/2016', 'dd/mm/yyyy'), '0', 'PHI', 'DET' )"); 	
+			 	statement.executeQuery("INSERT INTO Customer VALUES( '1', 'Mrs', 'Fletcher', 'Zahl', '0221724026632400', to_date('01/01/2015', 'dd/mm/yyyy'), 'Foo', 'Lititz', 'PA', '1234567890', 'foo@bar.null', '001' )");	 	
+			 	statement.executeQuery("INSERT INTO Reservation VALUES( '1', '1', 258, '0221724026632400', to_date('01/09/2016', 'dd/mm/yyyy'), '0', 'PHI', 'DET' )"); 	
 			 	statement.executeQuery("INSERT INTO Reservation_detail VALUES( '1', '1', to_date('03/09/2016', 'mm/dd/yyyy'), 1)");
 			 	statement.executeQuery("INSERT INTO System_time VALUES(to_date('01-JAN-2015 10:00:00', 'DD-MON-YYYY HH24:MI:SS'))");
+
+			 	if(i % 5 == 0)
+			 		System.out.println("Erased succesfully "+i+" times");
 	        }
-	        	
+	        
+
     	}
 		catch(SQLException e)
 		{
@@ -88,6 +118,8 @@ public class AdminDriver
 			{
 				System.out.println("Cannot close Statement. Error: " + e.toString());
 			}
+
+
 		}
 	}
 
@@ -101,6 +133,7 @@ public class AdminDriver
     	String file_line;
 
 		fr = new Scanner(new File("input2.txt").getAbsoluteFile());
+		System.out.println("Testing input file 2");
 
 		while(fr.hasNextLine())
 		{
@@ -133,6 +166,8 @@ public class AdminDriver
 	            }
 	        }
 	    }
+
+	    System.out.println("Input file 2 successfully inserted");
 	}
 
 	private static void LoadSchedule(Connection connection) throws IOException
@@ -145,6 +180,7 @@ public class AdminDriver
     	String file_line;
 
     	fr = new Scanner(new File("input3.txt").getAbsoluteFile());
+    	System.out.println("Testing input file 3");
 
 		//for each line of the file
 		while(fr.hasNextLine())
@@ -179,7 +215,9 @@ public class AdminDriver
 	                System.out.println("Cannot close Statement. Machine error: "+e.toString());
 	            }
 	        }
-	    }		
+	    }	
+
+	    System.out.println("Input file 3 successfully inserted");	
 	}
 
 	private static void LoadPricing(Connection connection) throws IOException
@@ -192,6 +230,7 @@ public class AdminDriver
     	String file_line;
 
 		fr = new Scanner(new File("input4.txt").getAbsoluteFile());
+		System.out.println("Testing input file 4\n");
 
 		//for each line of the file
 		while(fr.hasNextLine())
@@ -201,13 +240,13 @@ public class AdminDriver
 			
 			String[] tokens = file_line.split(",");
 			int temp1, temp2;
-			temp1 = Integer.parseInt(tokens[4]);
-			temp2 = Integer.parseInt(tokens[5]);
+			temp1 = Integer.parseInt(tokens[3]);
+			temp2 = Integer.parseInt(tokens[4]);
 
 	    	try
 	    	{
 		        statement = connection.createStatement();
-		        query = "INSERT INTO Price VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+tokens[2]+"', '"+tokens[3]+"', '"+temp1+"', '"+temp2+"')";
+		        query = "INSERT INTO Price VALUES ('"+tokens[0]+"', '"+tokens[1]+"', '"+tokens[2]+"', '"+temp1+"', '"+temp2+"')";
 	    	}
 			catch(SQLException e)
 			{
@@ -225,9 +264,13 @@ public class AdminDriver
 				}
 			}
 		}
+
+		System.out.println("Input file 4 successfully inserted");
 		
 		try
     	{
+    		System.out.println("Testing inserts by the user");
+
 	        statement = connection.createStatement();
 	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AZC', '003', '200', '100')");
 	        statement.executeQuery("INSERT INTO Price VALUES('AAM', 'AWD', '003', '200', '100')");
@@ -272,6 +315,8 @@ public class AdminDriver
 				System.out.println("Cannot close Statement. Error: " + e.toString());
 			}
 		}
+
+		System.out.println("User input successful inserted");
 	}
 
 	private static void LoadPlane(Connection connection) throws IOException
@@ -284,6 +329,7 @@ public class AdminDriver
     	String file_line = "";
 
 		fr = new Scanner(new File("input5.txt").getAbsoluteFile());
+		System.out.println("Testing input file 5");
 
 		//for each line of the file
 		while(fr.hasNextLine())
@@ -320,7 +366,7 @@ public class AdminDriver
 			}
 		}
 
-		System.out.println("Input file 5 successfuly entered");
+		System.out.println("Input file 5 successfully inserted");
 	}
 
 	private static void GenerateManifest(Connection connection)
@@ -331,6 +377,8 @@ public class AdminDriver
     	String query;
     	String[] dates = {"03/09/2016","12/16/2015","02/07/2016","04/10/2016","05/08/2016"};
     	String[] flight_nums = {"92","93","94","95","96"};
+
+    	System.out.println("Producing 25 flight manifests");
 
     	for(String date : dates)
     	{

@@ -232,25 +232,19 @@ begin
  From Price Join Flight on Flight.airline_id = Price.airline_id 
  Where flight_number = :newVal.flight_number;
 
-  --subtract the old high price from the total cost
- update Reservation 
- set cost = cost - old_high_price 
- where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
- 
- --add the new high price to the cost
- update Reservation 
- set cost = cost + upd_high_price 
- where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
+ --adjust the cost of the high price if necessary
+ IF old_high_price != upd_high_price THEN
+ 	update Reservation 
+ 	set cost = cost - old_high_price + upd_high_price 
+ 	where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
+ END IF;
 
-   --subtract the old low price from the total cost
- update Reservation 
- set cost = cost - old_low_price 
- where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
- 
- --add the new low price to the cost
- update Reservation 
- set cost = cost + upd_low_price 
- where ticketed = 'N' and :newVal.reservation_number = Reservation.reservation_number;
+   --sadjust the cost of the low price if necessary
+ IF old_low_price != upd_low_price THEN
+ 	update Reservation 
+ 	set cost = cost - old_low_price + upd_low_price 
+ 	where ticketed = 'N' and :oldVal.reservation_number = Reservation.reservation_number;
+ END IF;
 
 end;
 /
@@ -993,9 +987,44 @@ INSERT INTO Reservation_detail VALUES( '1', '91', to_date('03/09/2016', 'mm/dd/y
 INSERT INTO Reservation_detail VALUES( '1', '1', to_date('03/09/2016', 'mm/dd/yyyy'), 2);
 INSERT INTO Reservation_detail VALUES( '1', '53', to_date('03/09/2016', 'mm/dd/yyyy'), 3);
 INSERT INTO Reservation_detail VALUES( '2', '92', to_date('04/10/2016', 'mm/dd/yyyy'), 1);
-INSERT INTO Reservation_detail VALUES( '3', '93', to_date('05/08/2016', 'mm/dd/yyyy'), 1);
-INSERT INTO Reservation_detail VALUES( '4', '94', to_date('02/07/2016', 'mm/dd/yyyy'), 1);
-INSERT INTO Reservation_detail VALUES( '5', '95', to_date('06/06/2016', 'mm/dd/yyyy'), 1);
-INSERT INTO Reservation_detail VALUES( '6', '96', to_date('07/11/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '2', '93', to_date('04/10/2016', 'mm/dd/yyyy'), 2);
+INSERT INTO Reservation_detail VALUES( '3', '94', to_date('02/07/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '3', '95', to_date('02/07/2016', 'mm/dd/yyyy'), 2);
+INSERT INTO Reservation_detail VALUES( '3', '96', to_date('02/07/2016', 'mm/dd/yyyy'), 3);
 INSERT INTO Reservation_detail VALUES( '7', '97', to_date('08/19/2016', 'mm/dd/yyyy'), 1);
-INSERT INTO Reservation_detail VALUES( '8', '98', to_date('12/16/2015', 'mm/dd/yyyy'), 1);                
+INSERT INTO Reservation_detail VALUES( '8', '98', to_date('12/16/2015', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '9', '92', to_date('04/10/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '10', '93', to_date('05/08/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '11', '94', to_date('02/07/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '12', '95', to_date('06/06/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '13', '96', to_date('07/11/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '14', '97', to_date('08/19/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '15', '98', to_date('12/16/2015', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '16', '92', to_date('04/10/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '17', '93', to_date('05/08/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '18', '94', to_date('02/07/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '19', '95', to_date('06/06/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '20', '96', to_date('07/11/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '21', '97', to_date('08/19/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '22', '98', to_date('12/16/2015', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '23', '92', to_date('04/10/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '24', '93', to_date('05/08/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '25', '94', to_date('02/07/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '26', '95', to_date('06/06/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '27', '96', to_date('07/11/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '28', '97', to_date('08/19/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '29', '98', to_date('12/16/2015', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '30', '92', to_date('04/10/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '31', '93', to_date('05/08/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '32', '94', to_date('02/07/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '33', '95', to_date('06/06/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '34', '96', to_date('07/11/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '35', '97', to_date('08/19/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '36', '98', to_date('12/16/2015', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '37', '92', to_date('04/10/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '39', '93', to_date('05/08/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '40', '94', to_date('02/07/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '45', '95', to_date('06/06/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '46', '96', to_date('07/11/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '47', '97', to_date('08/19/2016', 'mm/dd/yyyy'), 1);
+INSERT INTO Reservation_detail VALUES( '48', '98', to_date('12/16/2015', 'mm/dd/yyyy'), 1);               
